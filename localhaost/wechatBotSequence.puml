@@ -1,0 +1,32 @@
+@startuml
+participant "client" as Client
+participant "ExampleServiceProviderAProvider"
+participant "Middleware"
+participant "WechatBot"
+participant "Server"
+participant "HttpServer"
+
+Client -> ExampleServiceProviderAProvider: new ExampleServiceProviderAProvider(config)
+create Middleware
+Client -> Middleware: new Middleware()
+Client -> Middleware: setMiddlewares([MessageMiddleware, TextMessageMiddleware, ImageMessageMiddleware])
+create WechatBot
+Client -> WechatBot: new WechatBot(ExampleServiceProviderAProvider, loginHandle, Middleware)
+create Server
+Client -> Server: new Server(WechatBot, host, port)
+Client -> Server: start()
+
+Server -> HttpServer: new HttpServer(host, port, false)
+Server -> Server: inintialize()
+Server -> WechatBot: getServiceProvider()
+Server -> Server: addRoute(http_callback_url, callback)
+Server -> HttpServer: handle(route, callback)
+
+alt HTTP request
+    HttpServer -> Server: callback(Request, Response)
+    Server -> WechatBot: receiveMessageHandle(Request.post)
+    WechatBot -> Middleware: setData(message)
+    Middleware -> WechatBot: handle()
+end
+
+@enduml

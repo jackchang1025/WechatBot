@@ -1,0 +1,3 @@
+设计 WechatBot 的登录模块时可以依赖于一个LoginInterface实现，但是具体登录的实现应该是由具体的服务提供商来完成。
+WechatBot类有一个ServiceProvider属性，它是 ServiceProviderInterface 的实现。 这个 ServiceProvider 类负责通过HTTP接口与第三方服务平台进行通信，实现机器人的操作，例如：登录，发送消息，接送消息
+
