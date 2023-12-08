@@ -1,0 +1,56 @@
+{
+  "name": "使用 php8 构建一个 wechatBot 机器人项目",
+  "description": "使用 php8 构建一个 wechatBot 机器人项目",
+  "config": "请你使用中文交流",
+  "current_task_id": "",
+  "task_list": [
+    {
+      "name": "构建一个简单的PHP项目",
+      "id": "u5u584739543-001",
+      "description": "根据外部文件构建代码",
+      "status": "Running",
+      "task_level": "1",
+      "created_date": "",
+      "updated_date": "",
+      "require": [
+        {"description":"wechatBot 功能模块文件","path": "/mnt/data/WechatBotProject.md"},
+        {"description":"wechatBot 类图","path": "/mnt/data/WechatBotClass.puml"},
+        {"description":"wechatBot 时序图","path": "/mnt/data/wechatBotSequence.puml"}
+      ],
+      "subtasks": [
+      ]
+    }
+  ],
+  "scripts": [
+    {
+      "name": "list",
+      "option": "-s 根据任务状态列出任务",
+      "description": "使用 makedown 树状图格式列出所有任务"
+    },
+    {
+      "name": "task:create",
+      "option": "-n 任务名称必须",
+      "description": "创建一个任务"
+    },
+    {
+      "name": "task:update",
+      "option": "-n 更新任务名称,-d 更新任务描述",
+      "description": "更新任务"
+    },
+    {
+      "name": "task:delete",
+      "option": "-id 根据id删除任务",
+      "description": "删除任务"
+    },
+    {
+      "name": "task:find",
+      "option": "-id 根据查询任务",
+      "description": "使用 makedown 树状图格式列出任务详情"
+    },
+    {
+      "name": "task:run",
+      "option": "",
+      "description": "根据任务列表一步一步开始执行任务"
+    }
+  ]
+}

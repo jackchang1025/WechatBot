@@ -1,0 +1,724 @@
+{
+	"info": {
+		"_postman_id": "a5634735-ff0b-4d5b-88c8-a8f353ddac97",
+		"name": "eyun",
+		"description": "[E云](http://home.wkteam.cn/#/Home) 是一套完整的的第三方服务平台，提供了开发者与个微对接的能力，技术上来讲是一款基于微信提供的个人开放性API，使用简单，操作快捷，支持多种微信方式接入。EndFragment\n\n**可开发的功能包括但不限于：**\n\n- **好友管理：**添加好友、删除好友、修改备注、创建标签、获取好友列表、搜索好友信息\n- **消息管理：**发文本消息、图片消息、名片消息、动图表情、小程序、发文件、发送视频、发送URL链接\n- **群管理：**自动创群、修改群名称、邀请新成员、踢群成员、获取群列表、发送邀请链接、获取群聊。\n- **朋友圈：**发送朋友圈、朋友圈点赞、获取朋友圈列表、转发朋友圈、同步朋友圈，批量发送朋友圈\n- **基于API您可以创造更多有趣的功能....**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18543785"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "登录",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"account\":13067772321,\r\n    \"password\":123456\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/member/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"member",
+								"login"
+							]
+						},
+						"description": "StartFragment\n\n| 参数名 | 必选 | 类型 | 说明 |\n| --- | --- | --- | --- |\n| account | 是 | string | **开发者**账号 |\n| password | 是 | string | **开发者**密码 |\n\nEndFragment  \n  \nStartFragment\n\n**返回数据：**\n\n| 参数名 | 类型 | 说明 |\n| --- | --- | --- |\n| code | string | 1000成功，1001失败 |\n| msg | string | 反馈信息 |\n| **Authorization** | string | 授权密钥，生成后永久有效 |\n| callbackUrl | string | 消息回调地址 |\n| status | string | 状态（0：正常，1：冻结，2：到期） |\n\nEndFragment"
+					},
+					"response": [
+						{
+							"name": "成功示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"account\":13067772321,\r\n    \"password\":123456\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/member/login",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"member",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 24 Nov 2023 03:38:33 GMT"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-Xss-Protection",
+									"value": "1; mode=block"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"1000\",\n    \"message\": \"成功\",\n    \"data\": {\n        \"Authorization\": \"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMzA2Nzc3MjMyMSIsInBhc3N3b3JkIjoiJDJhJDEwJFAzdmF2ZkppSVJGbmVwZWVDMnNWWi5SaHBnUlh3Z1VXWFhnS2NCeWRNdk11QkZKSUlaN3JDIn0.MEUwic9Id1hh3tWzIE9cLp3q03iOCW7Y5I_wVb7AtWp7ZWgzMCGwpZI_566ykUeQYvSFWLlEeTFzG2bS_wTDwg\",\n        \"callbackUrl\": null,\n        \"status\": 0\n    }\n}"
+						},
+						{
+							"name": "错误示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"account\":13267236724,\r\n    \"password\":123456\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/member/login",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"member",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 24 Nov 2023 03:29:36 GMT"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "X-Xss-Protection",
+									"value": "1; mode=block"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"code\": \"1001\",\n    \"message\": \"账号或密码错误！\",\n    \"data\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "获取二维码",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"wcId\":\"xxx\",\r\n\"proxy\":16,\r\n\"proxyIp\":\"127.0.0.1:10809\",\r\n\"proxyUser\":\"xxxx\",\r\n\"proxyPassword\":\"xxx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/iPadLogin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"iPadLogin"
+							]
+						},
+						"description": "This endpoint allows users to log in to the iPad application. The request should be sent as an HTTP POST to the specified URL. The request body should include the following parameters:\n\nStartFragment\n\n**参数：**\n\n| 参数名 | 必选 | 类型 | 说明 |\n| --- | --- | --- | --- |\n| **wcId** | 是 | string | 微信原始id （首次登录平台的号传空，掉线重登必须传值，否则会频繁掉线！！！） [第三步](https://www.wkteam.cn/api-wen-dang2/deng-lu/zhi-xing-wei-xin-deng-lu.html)会返回此字段，记得入库保存 |\n| proxy | 是 | int | 测试长效代理  <br>1：北京 2：天津 3：上海 4：重庆 5：河北  <br>6：山西 7：江苏 8：浙江 9：安徽 10：福建  <br>11：江西 12：山东 13：河南 14：湖北 15：湖南  <br>16：广东 17：海南 18：四川 20：陕西 |\n| proxyIp | 否 | string | 自定义长效代理IP+端口 |\n| proxyUser | 否 | string | 自定义长效代理IP平台账号 |\n| proxyPassword | 否 | string | 自定义长效代理IP平台密码 |\n\n**小提示：**\n\n- **若测试长效代理未包含您所在的城市，用户需自行购买/搭建自定义长效代理IP使用，否则会出现无法登录/秒掉/风控等情况**（PS：须是中国电信网络归属且是**支持**Socks5的），例如第三方长效代理IP购买网站：[四叶天(推荐)](https://www.siyetian.com/staticip.html)、[熊猫](http://www.xiongmaodaili.com/?invitationCode=5DAA9E9E-518B-4E3D-AD3C-304304D071A6)、[芝麻](https://jahttp.zhimaruanjian.com/?pid=8889001902)、[青果](https://www.qg.net/?aff=695691)等，可能部分平台需要设置白名单，将自助后台-API开通信息的IP添加即可。\n- 传proxyIp相关参数则覆盖proxy登录地点，（自定义长效代理优点：安全去异地、避免风控、解决号秒掉、代理线路用户过多导致线路挂掉等意外情况）\n- 若本接口返回网络链接异常，用户可通过本方式检测购买的代理IP是否正常且可访问，[参考此处测试](https://blog.csdn.net/l897385237l/article/details/122813150)\n- 本方式无需要用户下载app/exe，需要用本省市代理方可登录\n- 开发者将本接口返回的二维码让用户去扫码，手机扫码结束后，需要调用第三步接口才会登录成功，且手机顶部显示ipad已登录 ，\n    \n\n**返回数据：**\n\n| 参数名 | 类型 | 说明 |\n| --- | --- | --- |\n| code | string | 1000成功，1001失败 |\n| msg | string | 反馈信息 |\n| data |  |  |\n| **wId** | string | 登录实例标识 **（本值非固定的，每次重新登录会返回新的，数据库记得实时更新wid）** |\n| qrCodeUrl | string | 扫码登录地址 |\n\nEndFragment\n\nExample:\n\n``` json\n{\n    \"wcId\": \"xxx\",\n    \"proxy\": 16,\n    \"proxyIp\": \"127.0.0.1:10809\",\n    \"proxyUser\": \"xxxx\",\n    \"proxyPassword\": \"xxx\"\n}\n\n ```\n\nThe response to this request will have a status code of 200, and the body will contain a JSON object with the following structure:\n\n``` json\n{\n    \"code\": \"\",\n    \"message\": \"\",\n    \"data\": null\n}\n\n ```"
+					},
+					"response": [
+						{
+							"name": "成功示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\"wcId\":\"xxx\",//微信原始id （首次登录平台的号传空，掉线重登必须传值，否则会频繁掉线！！！） 第三步会返回此字段，记得入库保存\r\n\"proxy\":16,//1：北京 2：天津 3：上海 4：重庆 5：河北6：山西 7：江苏 8：浙江 9：安徽 10：福建11：江西 12：山东 13：河南 14：湖北 15：湖南 16：广东 17：海南 18：四川 20：陕西\r\n\"proxyIp\":\"127.0.0.1:10809\",//自定义长效代理IP+端口\r\n\"proxyUser\":\"xxxx\",//自定义长效代理IP平台账号\r\n\"proxyPassword\":\"xxx\"//自定义长效代理IP平台密码\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/iPadLogin",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"iPadLogin"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"登录成功\",\r\n    \"code\": \"1000\",\r\n    \"data\": {\r\n        \"wId\": \"0000016e-63ef-3a9c-0001-ed3311628ef4\",\r\n        \"qrCodeUrl\": \"http://127.0.0.1:18081/1573634652963-500000.png\"\r\n    }\r\n}"
+						},
+						{
+							"name": "错误示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\"wcId\":\"xxx\",//微信原始id （首次登录平台的号传空，掉线重登必须传值，否则会频繁掉线！！！） 第三步会返回此字段，记得入库保存\r\n\"proxy\":16,//1：北京 2：天津 3：上海 4：重庆 5：河北6：山西 7：江苏 8：浙江 9：安徽 10：福建11：江西 12：山东 13：河南 14：湖北 15：湖南 16：广东 17：海南 18：四川 20：陕西\r\n\"proxyIp\":\"127.0.0.1:10809\",//自定义长效代理IP+端口\r\n\"proxyUser\":\"xxxx\",//自定义长效代理IP平台账号\r\n\"proxyPassword\":\"xxx\"//自定义长效代理IP平台密码\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "121.229.29.88:9899/iPadLogin",
+									"host": [
+										"121",
+										"229",
+										"29",
+										"88"
+									],
+									"port": "9899",
+									"path": [
+										"iPadLogin"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"用户名或密码错误\",\r\n    \"code\": \"1001\",\r\n    \"data\": null\r\n}"
+						}
+					]
+				},
+				{
+					"name": "确认登录",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"wId\": \"0000016e-63eb-f319-0001-ed01076abf1f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/getIPadLoginInfo",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"getIPadLoginInfo"
+							]
+						},
+						"description": "StartFragment\n\n**参数：**\n\n| 参数名 | 必选 | 类型 | 说明 |\n| --- | --- | --- | --- |\n| wId | 是 | string | **登录实例标识** |\n| verifyCode | 否 | string | 验证码  <br>默认不传，若扫码结束后，本接口返回提示\"请在ipad上输入验证码\"  <br>，则再调用1次本接口且传验证码即可（PS：极少情况下会出现此情况,可忽略此字段） |\n\n**小提示：**\n\n- **此接口为检测耗时接口，最长250S返回请求，用户VX扫码了会返回结果，且扫码成功后手机上会显示ipad登录成功，才可以收发消息及调用其它接口！**\n    \n- **首次登录平台，24小时内会掉线1次，且72小时内不能发送朋友圈，掉线后必须传wcid调用获取二维码接口再次扫码登录即可实现3月内不掉线哦，** [<b>详细规范点击这里(第1大类1小节) PS：若出现登录60S内无故掉线也看这里哦!</b>](https://docs.qq.com/doc/DVFJJd2VqcmtsZkpG)\n    \n\n**返回数据：**\n\n| 参数名 | 类型 | 说明 |\n| --- | --- | --- |\n| code | string | 1000成功，1001失败 |\n| msg | string | 反馈信息 |\n| data |\n| **wcId** | string | 微信id  <br>(唯一值） |\n| nickName | string | 昵称 |\n| deviceType | string | 扫码的设备类型 |\n| uin | int | 识别码 |\n| headUrl | string | 头像url |\n| **wAccount** | string | 手机上显示的微信号  <br>（用户若手机改变微信号，本值会变） |\n| sex | int | 性别 |\n| mobilePhone | string | 绑定手机 |\n| status | string | 保留字段 |\n\nEndFragment"
+					},
+					"response": [
+						{
+							"name": "成功示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\": \"0000016e-63eb-f319-0001-ed01076abf1f\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/getIPadLoginInfo",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getIPadLoginInfo"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"code\": \"1000\",\r\n    \"message\": \"处理成功\",\r\n    \"data\": {\r\n        \"country\": \"CN\",\r\n        \"wAccount\": \"hi1212\",\r\n        \"deviceType\": \"android\",\r\n        \"city\": \"\",\r\n        \"signature\": \"我的签名如风一样难以琢磨\",\r\n        \"nickName\": \"贝塔同学\",\r\n        \"sex\": 2,\r\n        \"headUrl\": \"http://wx.qlogo.cn/mmhead/ver_1/EImpg1FWcIdhPg3zRAnkVdVdV2hic1Mib7zZ9mLTwhv5QzhNrdTCL0nKAsOgiaRrJmQwrXnBY7c1QNDo4aNc8niaicYuQpLPbJqyaJ6sKjlm5mKY/0\",\r\n        \"type\": 2,\r\n        \"smallHeadImgUrl\": \"http://wx.qlogo.cn/mmhead/ver_1/EImpg1FWcIdhPg3zRAnkVdVdV2hic1Mib7zZ9mLTwhv5QzhNrdTCL0nKAsOgiaRrJmQwrXnBY7c1QNDo4aNc8niaicYuQpLPbJqyaJ6sKjlm5mKY/132\",\r\n        \"wcId\": \"wxid_ylxtxxg0p8bx22\",\r\n        \"wId\": \"25d50610-1a82-4531-b9db-dd80c5a3c14a\",\r\n        \"mobilePhone\": \"19822121231\",\r\n        \"uin\": 124723525,\r\n        \"status\": 3,\r\n        \"username\": \"18013350963\"\r\n    }\r\n}"
+						},
+						{
+							"name": "错误示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\": \"0000016e-63eb-f319-0001-ed01076abf1f\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/getIPadLoginInfo",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getIPadLoginInfo"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"失败\",\r\n    \"code\": \"1001\",\r\n    \"data\": null\r\n}"
+						}
+					]
+				}
+			],
+			"description": "获取授权密钥，生成后永久有效"
+		},
+		{
+			"name": "AddressList",
+			"item": [
+				{
+					"name": "初始化通讯录列表",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"wId\":\"6a696578-16ea-4edc-ac8b-e609bca39c69\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/initAddressList",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"initAddressList"
+							]
+						},
+						"description": "This endpoint is used to initialize an address list. The request should be sent as an HTTP POST to {{host}}/initAddressList with a payload in raw format. The payload should include a parameter \"wId\" with its value.\n\n### Request Body\n\n- wId (string): 登录实例标识"
+					},
+					"response": [
+						{
+							"name": "成功示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\":\"6a696578-16ea-4edc-ac8b-e609bca39c69\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/initAddressList",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"initAddressList"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"成功\",\r\n    \"code\": \"1000\",\r\n    \"data\": null\r\n}"
+						},
+						{
+							"name": "错误示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\":\"6a696578-16ea-4edc-ac8b-e609bca39c69\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "121.229.29.88:9899/initAddressList",
+									"host": [
+										"121",
+										"229",
+										"29",
+										"88"
+									],
+									"port": "9899",
+									"path": [
+										"initAddressList"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"code\": \"1001\",\r\n    \"message\": \"wId已注销或二维码失效，请重新登录\",\r\n    \"data\": null\r\n}"
+						}
+					]
+				},
+				{
+					"name": "获取通讯录列表",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"wId\":\"6a696578-16ea-4edc-ac8b-e609bca39c69\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/getAddressList",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"getAddressList"
+							]
+						},
+						"description": "This API endpoint allows you to retrieve a list of addresses by making an HTTP POST request to the specified URL. The request should include a payload in raw JSON format with the \"wId\" parameter.\n\n- **获取通讯录列表之前，必须调用**[<b>初始化通讯录列表接口</b>](https://www.wkteam.cn/api-wen-dang2/deng-lu/initFriendList.html)**。**\n- **此接口不会返回好友/群的详细信息，如需获取详细信息，请调用**[<b>获取联系人详情接口</b>](https://www.wkteam.cn/api-wen-dang2/hao-you-cao-zuo/queryUserInfo.html)\n- **本接口的返回群聊的是保存到通讯录的群聊**[<b>详细规范点击这里(第5大类3小节)</b>](https://docs.qq.com/doc/DVFJJd2VqcmtsZkpG)\n    \n\n### Request Body\n\n- wId (string, required): 登录实例标识\n    \n\n**Response Body**\n\n| 参数名 | 类型 | 说明 |\n| --- | --- | --- |\n| code | String | 1000成功  <br>1001失败 |\n| msg | String | 反馈信息 |\n| data | JSONObject |  |\n| chatrooms | JSONArray | 群组列表  <br>[群组返回为null的处理方法(第5大类3小节)](https://docs.qq.com/doc/DVFJJd2VqcmtsZkpG) |\n| friends | JSONArray | 好友列表  <br>不包含企微好友， [获取企微好友列表点击这里](https://www.wkteam.cn/api-wen-dang2/hao-you-cao-zuo/getImAddressList.html) |\n| ghs | JSONArray | 公众号列表 |\n| others | JSONArray | 微信其他相关 |"
+					},
+					"response": [
+						{
+							"name": "成功示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\":\"6a696578-16ea-4edc-ac8b-e609bca39c69\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/getAddressList",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getAddressList"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"code\": \"1000\",\r\n    \"message\": \"获取通讯录成功\",\r\n    \"data\": {\r\n        \"chatrooms\": [\r\n            \"\"\r\n        ],\r\n        \"friends\": [\r\n            \"\"\r\n        ],\r\n        \"ghs\": [\r\n            \"\"\r\n        ],\r\n        \"others\": [\r\n            \"\"\r\n        ]\r\n    }\r\n}"
+						},
+						{
+							"name": "错误示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\":\"6a696578-16ea-4edc-ac8b-e609bca39c69\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/getAddressList",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getAddressList"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"失败\",\r\n    \"code\": \"1001\",\r\n    \"data\": null\r\n}"
+						}
+					]
+				},
+				{
+					"name": "获取联系人信息",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"wId\": \"349be9b5-8734-45ce-811d-4e10ca568c67\",\r\n    \"wcId\": \"LoChaX,wxid_wl9qchkanp9u22\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/getContact",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"getContact"
+							]
+						},
+						"description": "StartFragment\n\n**参数：**\n\n| 参数名 | 必选 | 类型 | 说明 |\n| --- | --- | --- | --- |\n| wId | 是 | String | 登录实例标识 |\n| wcId | 是 | String | 好友微信id/群id,多个好友/群 以\",\"分隔每次最多支持20个微信/群号,记得本接口随机间隔300ms-1500ms，频繁调用容易导致掉线 |\n\nEndFragment\n\nStartFragment\n\n**返回数据：**\n\n| 参数名 | 类型 | 说明 |\n| --- | --- | --- |\n| code | String | 1000成功  <br>1001失败 |\n| msg | String | 反馈信息 |\n| data | JSONObject |  |\n| userName | String | 微信id |\n| nickName | String | 昵称 |\n| remark | String | 备注 |\n| signature | String | 签名 |\n| sex | int | 性别 |\n| aliasName | String | 微信号 |\n| country | String | 国家 |\n| bigHead | String | 大头像 |\n| smallHead | String | 小头像 |\n| labelList | String | 标签列表 |\n| v1 | String | 用户的wxId，都是以v1开头的一串数值，v2数据，则是作为v1数据的辅助 |\n\nEndFragment"
+					},
+					"response": [
+						{
+							"name": "成功示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\": \"349be9b5-8734-45ce-811d-4e10ca568c67\",\r\n    \"wcId\": \"LoChaX,wxid_wl9qchkanp9u22\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/getContact",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getContact"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"成功\",\r\n    \"code\": \"1000\",\r\n    \"data\": [\r\n        {\r\n            \"userName\": \"test558666\",\r\n            \"nickName\": \"追风少年666\",\r\n            \"remark\": \"\",\r\n            \"signature\": \"66666\",\r\n            \"sex\": 1,\r\n            \"aliasName\": \"test558666\",\r\n            \"country\": \"CN\",\r\n            \"bigHead\": \"http://wx.qlogo.cn/mmhead/PiajxSqBRaEL8iaRQBnStn37LYat3fREC4Y2iaStECzbX3icxntWBhWQ3w/0\",\r\n            \"smallHead\": \"http://wx.qlogo.cn/mmhead/PiajxSqBRaEL8iaRQBnStn37LYat3fREC4Y2iaStECzbX3icxntWBhWQ3w/132\",\r\n            \"labelList\": \"\",\r\n            \"v1\": \"v1_584e7774024c79af0e7304bf7afba775b31bf075651c16c964b1b5bf16369924ebf1ee7bc151c1feee1979e1dd40f0dd@stranger\"\r\n        }\r\n    ]\r\n}"
+						},
+						{
+							"name": "错误示例",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"wId\": \"349be9b5-8734-45ce-811d-4e10ca568c67\",\r\n    \"wcId\": \"LoChaX,wxid_wl9qchkanp9u22\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/getContact",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"getContact"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": "{\r\n    \"message\": \"失败\",\r\n    \"code\": \"1001\",\r\n    \"data\": null\r\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMzA2Nzc3MjMyMSIsInBhc3N3b3JkIjoiJDJhJDEwJFAzdmF2ZkppSVJGbmVwZWVDMnNWWi5SaHBnUlh3Z1VXWFhnS2NCeWRNdk11QkZKSUlaN3JDIn0.MEUwic9Id1hh3tWzIE9cLp3q03iOCW7Y5I_wVb7AtWp7ZWgzMCGwpZI_566ykUeQYvSFWLlEeTFzG2bS_wTDwg",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "121.229.29.88:9899",
+			"type": "string"
+		},
+		{
+			"key": "Authorization",
+			"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMzA2Nzc3MjMyMSIsInBhc3N3b3JkIjoiJDJhJDEwJFAzdmF2ZkppSVJGbmVwZWVDMnNWWi5SaHBnUlh3Z1VXWFhnS2NCeWRNdk11QkZKSUlaN3JDIn0.MEUwic9Id1hh3tWzIE9cLp3q03iOCW7Y5I_wVb7AtWp7ZWgzMCGwpZI_566ykUeQYvSFWLlEeTFzG2bS_wTDwg",
+			"type": "string"
+		}
+	]
+}
