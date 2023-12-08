@@ -8,24 +8,18 @@ use App\Service\ECloud\HttpService;
 use App\Service\WechatBot\Exceptions\AccountStatusException;
 use App\Service\WechatBot\Exceptions\ApiResponseException;
 use App\Service\WechatBot\Exceptions\ConfirmLoginException;
-use App\Service\WechatBot\Login\LoginManagerInterface;
+use App\Service\WechatBot\Login\RemoteLoginManagerInterface;
 use App\Service\WechatBot\Login\QRCodeResponseInterface;
-use App\Service\WechatBot\User\User;
 use GuzzleHttp\Exception\GuzzleException;
 
-readonly class LoginManager implements LoginManagerInterface
+readonly class RemoteLoginManager implements RemoteLoginManagerInterface
 {
     /**
      * @param HttpService $httpService
      * @param Config $config
-     * @throws AccountStatusException
-     * @throws ApiResponseException
-     * @throws ConfirmLoginException
-     * @throws GuzzleException
      */
     public function __construct(protected HttpService $httpService, protected Config $config)
     {
-        $this->login();
     }
 
     /**
@@ -42,7 +36,6 @@ readonly class LoginManager implements LoginManagerInterface
         ]);
 
         if ($response['status'] != AccountStatus::NORMAL->value) {
-
             $status = AccountStatus::from($response['status']);
             throw new AccountStatusException($status->getDescription());
         }
@@ -65,7 +58,7 @@ readonly class LoginManager implements LoginManagerInterface
     public function getQRCode(): QRCodeResponseInterface
     {
         $response = $this->httpService->post('/iPadLogin', [
-            'wcId'          => $this->config->get('wcId'),
+            'wcId'          => $this->config->get('wcId',''),
             'proxy'         => $this->config->get('proxy'),
             'proxyIp'       => $this->config->get('proxyIp'),
             'proxyUser'     => $this->config->get('proxyUser'),

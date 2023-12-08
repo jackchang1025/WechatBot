@@ -2,88 +2,66 @@
 
 namespace App\Service\WechatBot;
 
+use App\Event\LoginQRCodeEvent;
+use App\Event\receiveMessageEvent;
+use App\Event\UserInitEvent;
+use App\Service\ECloud\ExampleServiceProviderAProvider;
+use App\Service\WechatBot\User\UserManagerInterface;
+use Hyperf\Context\ApplicationContext;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Swoole\Coroutine\Http\Server;
+use Swoole\Http\Request;
+use Swoole\Http\Response;
 
-use App\Service\WechatBot\Exceptions\ApiResponseException;
-use App\Service\WechatBot\Exceptions\ConfirmLoginException;
-use App\Service\WechatBot\Login\LoginHandleInterface;
-use App\Service\WechatBot\Middleware\Middleware;
-use App\Service\WechatBot\User\User;
-use App\Service\WechatBot\User\UserInterface;
-
-readonly class WechatBot
+ class WechatBot implements WechatBotInterface
 {
-    protected UserInterface $user;
 
     public function __construct(
+        protected UserManagerInterface $userManager,
         protected ServiceProviderInterface $serviceProvider,
-        protected LoginHandleInterface $loginHandle,
-        protected Middleware $middleware,
     ) {
-        // 初始化
-        $this->initialize();
-    }
-
-    // 初始化函数
-    private function initialize()
-    {
-        // 这里可以添加代码来初始化设置日志等
-    }
-
-    public function getServiceProvider(): ServiceProviderInterface
-    {
-        return $this->serviceProvider;
     }
 
     public function start()
     {
-        //获取二维码
-        echo $this->getQRCode();
+        $user = $this->userManager->getUserManager();
 
-        // 获取用户信息
-        $this->user = new User($this->serviceProvider->getLoginManager()->getUserInfo(),$this->serviceProvider);
+        if (!$user->isLogin()) {
 
-        var_dump($this->user);
+            //登录
+            $this->userManager->getLoginManager()->login();
 
-        //获取通讯录列表
-        $addressList = $this->serviceProvider->getAddressManager()->getAddressList();
+            //获取二维码
+            $response = $this->userManager->getLoginManager()->getQRCode();
+            ApplicationContext::getContainer()->get(EventDispatcherInterface::class)->dispatch(new LoginQRCodeEvent($response));
 
-        $this->user->setAddressList($addressList);
-
-        // TODO: 使用异步任务获取联系人信息异步任务
-    }
-
-    /**
-     * @return mixed
-     * @throws ApiResponseException
-     * @throws ConfirmLoginException|\Exception
-     */
-    public function getQRCode(): mixed
-    {
-        $response = $this->serviceProvider->getLoginManager()->getQRCode();
-
-        if (!$response->getQrCodeUrl()) {
-            throw new \Exception("获取二维码失败");
+            //获取用户信息
+            $user = $this->userManager->getLoginManager()->getUserInfo();
+            ApplicationContext::getContainer()->get(EventDispatcherInterface::class)->dispatch(new UserInitEvent($user));
         }
 
-        return $this->loginHandle->qRCodeUrlHandle($response);
+        //获取通讯录列表
+//        $addressList = $this->userManager->getAddressManager()->getAddressList();
+
+//        var_dump($addressList->getAddressList());
+
     }
 
-    // 接收消息
-    private function receiveMessage()
+    public function getUserManager(): UserManagerInterface
     {
-
+        return $this->userManager;
     }
 
-    public function receiveMessageHandle(array $data){
-
-        $message = $this->serviceProvider->getReceiveMessageHandle()->dataToMessageFormat($data);
-
-        return $this->middleware->setData($message)->handle();
-    }
-
-    // 其他可能的方法，例如发送消息、处理事件等
-    public function sendMessage($message)
+    public function receiveMessageHandle(array $data): void
     {
-        // 实现发送消息的逻辑
+        $message = $this->serviceProvider->getRemoteReceiveMessageHandle()->dataToMessageFormat(
+            $data,
+            $this->getUserManager()->getUserManager()
+        );
+        ApplicationContext::getContainer()->get(EventDispatcherInterface::class)->dispatch(
+            new ReceiveMessageEvent($message)
+        );
+//
+//        return $this->middleware->setData($message)->handle();
     }
 }

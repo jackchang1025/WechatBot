@@ -11,7 +11,10 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
+use App\Controller\ECloud\AddressController;
+use App\Controller\ECloud\CallbackController;
 use App\Controller\ECloud\LoginController;
+use App\Controller\WebSocketController;
 use App\Middleware\ECloud\AuthMiddleware;
 use Hyperf\HttpServer\Router\Router;
 
@@ -22,19 +25,24 @@ Router::get('/favicon.ico', function () {
 });
 
 
-
-
+Router::addServer('ws', function () {
+    Router::get('/', [WebSocketController::class, 'index']);
+});
 
 
 Router::addGroup('', function () {
 
     Router::post('/member/login', [LoginController::class, 'login']);
 
+    Router::post('/setHttpCallbackUrl', [CallbackController::class, 'index']);
 
     Router::addGroup('', function () {
 
         Router::post('/iPadLogin', [LoginController::class, 'iPadLogin']);
         Router::post('/getIPadLoginInfo', [LoginController::class, 'getIPadLoginInfo']);
+
+        Router::post('/initAddressList', [AddressController::class, 'initAddressList']);
+        Router::post('/getAddressList', [AddressController::class, 'getAddressList']);
 
     }, ['middleware' => [AuthMiddleware::class]]);
 

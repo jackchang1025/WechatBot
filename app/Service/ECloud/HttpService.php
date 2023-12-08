@@ -10,7 +10,7 @@ class HttpService
 {
     private Client $httpClient;
 
-    public function __construct(Client $httpClient, Config $config)
+    public function __construct(Client $httpClient, protected Config $config)
     {
         $this->httpClient = $httpClient;
         $this->configureHttpClient($config);
@@ -61,6 +61,18 @@ class HttpService
 
         // 使用 ApiResponseHandler 处理响应
         return ApiResponseHandler::handleResponse($response);
+    }
+
+
+    public function __sleep() {
+        // 返回所有可序列化的属性名称，排除闭包类型的属性
+        return ['config']; // 不包含闭包属性
+    }
+
+
+    public function __wakeup() {
+        // 重新初始化资源
+        $this->httpClient = new Client(['base_uri' => $this->config->get('base_uri')]); // 重新创建 finfo 资源
     }
 }
 

@@ -10,19 +10,4 @@ use App\Service\WechatBot\User\UserInterface;
 class TextMessage implements TextMessageInterface
 {
     use Message;
-
-    public function toFromGroup(): GroupInterface
-    {
-        // TODO: Implement toFromGroup() method.
-    }
-
-    public function toUser(): UserInterface
-    {
-        // TODO: Implement toUser() method.
-    }
-
-    public function toFromUser(): FriendInterface
-    {
-        // TODO: Implement toFromUser() method.
-    }
 }

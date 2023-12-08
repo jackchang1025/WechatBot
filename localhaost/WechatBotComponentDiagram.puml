@@ -1,0 +1,107 @@
+@startuml
+
+package "WechatBot Service" {
+    component BotManager
+
+    database "Redis Storage" as Redis {
+        component WechatBotA as "WechatBot\nInstance A"
+        component WechatBotB as "WechatBot\nInstance B"
+        component WechatBotC as "WechatBot\nInstance C"
+    }
+
+    BotManager --> Redis : stores/fetches >
+
+    WechatBotA --> UserManagerA : contains
+    WechatBotB --> UserManagerB : contains
+    WechatBotC --> UserManagerC : contains
+
+    package "WechatBotA Components" {
+
+        database RepositoryInterfaceA {
+            json data {
+               "Status":"Online",
+               "data":{},
+               "AddressList":[
+               {"Friends":{}},
+               {"Group":{}}
+               ]
+            }
+        }
+        [UserA] ..> RepositoryInterfaceA : interacts
+        UserManagerA --> [UserA] : contains
+        UserManagerA --> [ServiceProviderAProviderA] : uses
+    }
+
+    package "WechatBotB Components" {
+        database RepositoryInterfaceB {
+
+        }
+        [UserB] ..> [RepositoryInterfaceB] : interacts
+        UserManagerB --> [UserB] : contains
+        UserManagerB --> [ServiceProviderAProviderB] : uses
+    }
+
+    package "WechatBotC Components" {
+        database RepositoryInterfaceC {
+
+        }
+        [UserC] ..> [RepositoryInterfaceC] : interacts
+        UserManagerC --> [UserC] : contains
+        UserManagerC --> [ServiceProviderAProviderC] : uses
+    }
+
+    note top of [UserA] : Includes status attribute and\n__sleep/__wakeup methods for\nserialization handling
+    note bottom of [RepositoryInterfaceA] : Data storage interface\n(e.g., MySQL, Redis, MongoDB)
+}
+
+package "WechatBot ServiceB" {
+    component WechatBot
+    actor User
+    database RepositoryInterface {
+        json datastore {
+           "Status":"Online",
+           "data":{},
+           "messageList":[{}],
+           "AddressList":[
+           {"Friends":{}},
+           {"Group":{}}
+           ]
+        }
+    }
+
+    package "WechatBotReceiveMessage" {
+        component "receiveMessageService"
+    }
+
+    interface receiveMessageServiceInterface
+
+    cloud "RemoteServiceProvider"{
+      component "httpClient"
+      component "receiveMessage"
+      component "receiveMessageHandle"
+      component "config"
+
+    }
+
+    cloud "RemoteService"{
+
+    }
+    note top of RemoteService : 第三方远程服务接口
+
+    WechatBot --> User : contains
+    WechatBot --> WechatBotReceiveMessage : contains
+    User --> RemoteServiceProvider : contains
+    User -down-> RepositoryInterface : stores/fetches >
+
+    httpClient ..> RemoteService : "发送数据"
+    httpClient <-- config : "发送数据"
+    RemoteService ..> receiveMessage : 接收消息
+    receiveMessage --> receiveMessageHandle : 处理接收消息
+    receiveMessageHandle ..> receiveMessageServiceInterface : 实现接口
+
+
+    RemoteService ..> WechatBotReceiveMessage : 接收消息
+    WechatBotReceiveMessage --> receiveMessageServiceInterface : 处理接收消息
+}
+
+@enduml

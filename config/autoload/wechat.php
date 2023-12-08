@@ -5,8 +5,9 @@ use function Hyperf\Support\env;
 
 return [
     'default' => env('WECHAT_PLATFORM', 'ecloud'),
-    'http_callback_port' => 9502,
+    'http_callback_port' => 1025,
     'http_callback_host' => '0.0.0.0',
+    'http_callback_url' => '/setHttpCallbackUrl',
     'stores' => [
         'xbot'      => [
             'driver' => XBotService::class,

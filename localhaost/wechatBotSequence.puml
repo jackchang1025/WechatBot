@@ -1,32 +1,102 @@
 @startuml
-participant "client" as Client
-participant "ExampleServiceProviderAProvider"
-participant "Middleware"
-participant "WechatBot"
-participant "Server"
-participant "HttpServer"
 
-Client -> ExampleServiceProviderAProvider: new ExampleServiceProviderAProvider(config)
+participant Client
+participant Config
+participant ServiceProviderAProvider
+participant Middleware
+participant WechatBot
+participant Server
+participant UserInterface
+participant RemoteLoginManagerInterface
+participant RemoteAddressManagerInterface
+participant RemoteReceiveMessageHandleInterface
+participant MiddlewareHandle
+participant HttpServer
+
+
+note left  Client : 客户端
+note left  Config : wechat.php 配置文件
+Client -> Config : $option = get('wechat.stores.ecloud')
+
+note left  ServiceProviderAProvider : 第三方服务
+Client -> ServiceProviderAProvider : new ServiceProviderAProvider($option)
+Config -> ServiceProviderAProvider : return config details
+
 create Middleware
+note left  Middleware : 中间件处理接收消息
 Client -> Middleware: new Middleware()
 Client -> Middleware: setMiddlewares([MessageMiddleware, TextMessageMiddleware, ImageMessageMiddleware])
+
+note left  WechatBot : 微信机器人生命周期类
 create WechatBot
-Client -> WechatBot: new WechatBot(ExampleServiceProviderAProvider, loginHandle, Middleware)
+Client -> WechatBot : new(ServiceProviderAProvider, loginHandle, Middleware)
+
+Client -> Config : http_callback_host = get('wechat.http_callback_host')
+Client -> Config : http_callback_port = get('wechat.http_callback_port')
+
 create Server
-Client -> Server: new Server(WechatBot, host, port)
+Client -> Server : new(WechatBot, http_callback_host, http_callback_port)
 Client -> Server: start()
 
-Server -> HttpServer: new HttpServer(host, port, false)
-Server -> Server: inintialize()
-Server -> WechatBot: getServiceProvider()
-Server -> Server: addRoute(http_callback_url, callback)
-Server -> HttpServer: handle(route, callback)
+Server -> WechatBot : start()
+note left : 启动机器人
 
-alt HTTP request
-    HttpServer -> Server: callback(Request, Response)
-    Server -> WechatBot: receiveMessageHandle(Request.post)
-    WechatBot -> Middleware: setData(message)
-    Middleware -> WechatBot: handle()
+group  #ccc 获取二维码
+WechatBot -> ServiceProviderAProvider : getRemoteLoginManagerInterface()
+return RemoteLoginManagerInterface
+
+WechatBot -> RemoteLoginManagerInterface : echo RemoteLoginManagerInterface->getQRCode()
+note left : 展示二维码
+end
+
+group #ccc 初始化
+    group 用户信息
+    WechatBot -> ServiceProviderAProvider : getLoginManager()
+    return RemoteLoginManagerInterface
+
+    WechatBot -> RemoteLoginManagerInterface : getUserInterfaceInfo()
+    return LoginResponseInterface
+    note left : 获取用户信息
+
+    WechatBot -> UserInterface : new(LoginResponseInterface)
+    note left : 设置用户信息
+    end
+
+    group  通讯录
+    WechatBot -> ServiceProviderAProvider : getRemoteAddressManagerInterface()
+        return RemoteAddressManagerInterface
+
+    WechatBot -> RemoteAddressManagerInterface : getAddressList()
+    return addressList
+    note left : 获取通讯录列表
+
+    UserInterface -> RemoteAddressManagerInterface : setAddressList(addressList)
+    note left : 设置用户通讯录列表
+    end
+
+end
+
+group #ccc HttpServer
+    group #ccc 配置 HttpServer
+    note left HttpServer: HttpServer
+    Server -> HttpServer : new(host, port, false)
+    Server -> Server : inintialize()
+
+    Server -> Server : setCallbackUrl()
+    note right : 设置路由
+
+    Server -> HttpServer : addRoute(http_callback_url, callback)
+    end
+    group #ccc HTTP request 接收消息
+
+    Server  -> RemoteReceiveMessageHandleInterface : Message = WechatBot->serviceProvider->getRemoteReceiveMessageHandleInterface()->dataToMessageFormat($data)
+    note left : 转换消息格式
+
+    WechatBot -> Middleware : setData(message)
+    WechatBot -> Middleware : handle()
+    note left : 执行中间件
+    end group
+
 end
 
 @enduml

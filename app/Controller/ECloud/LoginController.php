@@ -2,9 +2,7 @@
 
 namespace App\Controller\ECloud;
 
-use App\Controller\AbstractController;
 use App\Request\LoginRequest;
-use Faker\Factory;
 use Faker\Generator;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
@@ -12,15 +10,11 @@ use Hyperf\Validation\Annotation\Scene;
 use Psr\Http\Message\ResponseInterface;
 
 
-class LoginController extends AbstractController
+class LoginController
 {
 
+    #[Inject]
     protected Generator $faker;
-
-    public function __construct()
-    {
-        $this->faker = Factory::create('zh_CN');
-    }
 
     #[Scene(scene: 'login')]
     public function login(LoginRequest $request, Response $response, ConfigInterface $config): ResponseInterface

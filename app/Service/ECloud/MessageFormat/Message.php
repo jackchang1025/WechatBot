@@ -2,12 +2,50 @@
 
 namespace App\Service\ECloud\MessageFormat;
 
+use App\Service\WechatBot\Friend\FriendInterface;
+use App\Service\WechatBot\Group\GroupInterface;
+use App\Service\WechatBot\User\UserInterface;
+use App\Service\WechatBot\WechatBotInterface;
+
 trait Message
 {
 
-    public function __construct(protected array $options)
+    public function __construct(protected UserInterface $user,protected array $options)
     {
     }
+
+    public function toUser(): UserInterface
+    {
+        // 获取接收消息的用户ID
+//        $userId = $this->getToUser(); // 假设 getToUser() 接收微信id
+
+        //获取用户信息的逻辑
+        return $this->user;
+    }
+
+    public function toFromGroup(): GroupInterface
+    {
+        //透过 toUser 找到用户 getGroupList 找到群列表 getGroup 找到群信息
+        return $this->toUser()
+            ->getGroupList()
+            ->getGroup($this->getFromGroup());
+    }
+
+    /**
+     *
+     * @return FriendInterface
+     */
+
+    public function toFromUser(): FriendInterface
+    {
+        $friendId = $this->getFromUser(); // 假设 getFromUser() 发送微信id
+
+        //透过 toUser 找到用户 getAddressList 找到用户通讯录 getAddress 找到好友
+        return $this->toUser()
+            ->getAddressList()
+            ->getAddress($friendId);
+    }
+
 
     /**
      * 获取消息内容
@@ -34,6 +72,11 @@ trait Message
     public function getToUser(): string
     {
         return $this->options['data']['toUser'] ?? '';
+    }
+
+    public function getFromGroup():string
+    {
+        return $this->options['data']['fromUser'] ?? '';
     }
 
     /**

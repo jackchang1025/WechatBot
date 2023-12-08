@@ -9,19 +9,17 @@ use App\Service\WechatBot\SendMessage\MessageFormat\Text;
 
 class TextMessageMiddleware implements MiddlewareInterface
 {
-
     public function handle(MessageInterface $request, \Closure $next)
     {
 
         if ($request instanceof TextMessageInterface) {
 
-            var_dump('TextMessageMiddleware', $request->getContent());
-
-            if ($request instanceof PrivateChatMessageInterface) {
-                $toUser = $request->toUser();
-                $toUser->send($request->toFromUser(), new Text($request->getContent()));
-            }
-
+            //获取消息发送给当前用户
+            $toUser = $request->toUser();
+            //获取消息发送者
+            $toFromUser = $request->toFromUser();
+            //回复一个文本消息
+            $toUser->send($toFromUser, new Text($request->getContent()));
         }
 
         return $next($request);

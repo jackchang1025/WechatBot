@@ -68,6 +68,6 @@ interface FriendInterface
      * 用户的wxId
      * @return string
      */
-    public function getV1():string;
+    public function getWechatId():string;
 
 }

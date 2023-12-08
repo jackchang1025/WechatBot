@@ -5,25 +5,22 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Service\ECloud\ExampleServiceProviderAProvider;
-use App\Service\ECloud\Login\LoginHandle;
-use App\Service\WechatBot\Middleware\ImageMessageMiddleware;
-use App\Service\WechatBot\Middleware\MessageMiddleware;
-use App\Service\WechatBot\Middleware\Middleware;
-use App\Service\WechatBot\Middleware\TextMessageMiddleware;
-use App\Service\WechatBot\Server;
-use App\Service\WechatBot\WechatBot;
+use App\Service\WechatBot\BotManager;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Contract\ConfigInterface;
-use Psr\Container\ContainerInterface;
+use Hyperf\Contract\ContainerInterface;
 
 #[Command]
 class ECloudExampleBot extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     * @param BotManager $botManager
+     */
     public function __construct(
         protected ContainerInterface $container,
-        protected LoginHandle $loginHandle,
-        protected ConfigInterface $config
+        protected BotManager $botManager,
     ) {
         parent::__construct('ecloud:run');
     }
@@ -36,22 +33,21 @@ class ECloudExampleBot extends HyperfCommand
 
     public function handle()
     {
-        $exampleServiceProviderAProvider = new ExampleServiceProviderAProvider(
-            $this->config->get('wechat.stores.ecloud')
-        );
-        $middleware                      = new Middleware();
-        $middleware->setMiddlewares([
-            new MessageMiddleware(),
-            new TextMessageMiddleware(),
-            new ImageMessageMiddleware(),
-        ]);
-        $wechatBot = new WechatBot($exampleServiceProviderAProvider, $this->loginHandle, $middleware);
 
-        $Server = new Server(
-            $wechatBot,
-            $this->config->get('wechat.http_callback_host'),
-            $this->config->get('wechat.http_callback_port')
+        $config = $this->container->get(ConfigInterface::class);
+
+        $bot = BotManager::buildBot(
+            new ExampleServiceProviderAProvider($config->get('wechat.stores.ecloud'))
         );
-        $Server->start();
+
+        $bot->start();
+
+        $getWechatId = $bot->getUserManager()->getUserManager()->getWechatId();
+        if ($getWechatId) {
+            $this->botManager->createBot($getWechatId, $bot);
+        }
+
+        $wechatBot = $this->botManager->findBotByWcId($getWechatId);
+        var_dump($wechatBot->getUserManager()->getUserManager()->getNickName(),$this->botManager->hGetAll());
     }
 }

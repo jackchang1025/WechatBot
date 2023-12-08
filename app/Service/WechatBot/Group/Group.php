@@ -8,4 +8,8 @@ class Group implements GroupInterface
     {
     }
 
+    public function getGroupId(): string
+    {
+        return $this->data['group_id'] ?? '';
+    }
 }

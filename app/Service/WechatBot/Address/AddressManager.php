@@ -2,50 +2,23 @@
 
 namespace App\Service\WechatBot\Address;
 
-use App\Service\ECloud\Config;
-use App\Service\ECloud\HttpService;
-use App\Service\WechatBot\Exceptions\ApiResponseException;
-use App\Service\WechatBot\Exceptions\ConfirmLoginException;
-use GuzzleHttp\Exception\GuzzleException;
+use App\Service\WechatBot\ServiceProviderInterface;
+use App\Service\WechatBot\User\UserInterface;
 
-readonly class AddressManager implements AddressInterface
+class AddressManager implements AddressManagerInterface
 {
-    public function __construct(
-        protected HttpService $httpService,
-        protected Config $config,
-    )
+
+
+    public function __construct(protected UserInterface $user,protected ServiceProviderInterface $serviceProvider)
     {
     }
 
-    /**
-     * 初始化通讯录列表
-     * @return array
-     * @throws GuzzleException
-     * @throws ApiResponseException|ConfirmLoginException
-     */
-    public function initAddressList(): array
-    {
-        return $this->httpService->post('/initAddressList', [
-            'wId' => $this->config->get('wId'),
-        ]);
-    }
-
-    /**
-     * 获取通讯录列表
-     * @return AddressListInterface
-     * @throws ApiResponseException
-     * @throws ConfirmLoginException
-     * @throws GuzzleException
-     */
     public function getAddressList(): AddressListInterface
     {
-        //初始化通讯录列表
-        $this->initAddressList();
+        $addressList =  $this->serviceProvider->getRemoteAddressManager()->getAddressList();
 
-//        return  $this->httpService->post('/getAddressList', [
-//            'wId' => $this->config->get('wId'),
-//        ]);
+        $this->user->setAddressList($addressList);
 
-
+        return $addressList;
     }
 }

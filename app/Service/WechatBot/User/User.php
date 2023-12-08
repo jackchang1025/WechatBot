@@ -3,6 +3,7 @@
 namespace App\Service\WechatBot\User;
 
 use App\Service\WechatBot\Address\AddressListInterface;
+use App\Service\WechatBot\Enum\UserStatus;
 use App\Service\WechatBot\Friend\FriendInterface;
 use App\Service\WechatBot\Group\GroupInterface;
 use App\Service\WechatBot\GroupList\GroupListInterface;
@@ -12,6 +13,7 @@ use App\Service\WechatBot\SendMessage\MessageFormat\TextInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\VideoInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\VoiceInterface;
 use App\Service\WechatBot\ServiceProviderInterface;
+use App\Service\WechatBot\WechatBotInterface;
 
 class User implements UserInterface
 {
@@ -19,9 +21,9 @@ class User implements UserInterface
 
     public function __construct(
         protected array $data,
-        protected ?ServiceProviderInterface $serviceProvider,
+        protected ServiceProviderInterface $serviceProvider,
+        protected string $status = UserStatus::NOT_LOGIN->value,
         protected ?GroupListInterface $groupList = null,
-        protected ?FriendInterface $friend = null,
         protected ?AddressListInterface $addressList = null
     ) {
 
@@ -37,17 +39,7 @@ class User implements UserInterface
         return $this->groupList;
     }
 
-    public function setFriend(?FriendInterface $friend): void
-    {
-        $this->friend = $friend;
-    }
-
-    public function getFriend(): ?FriendInterface
-    {
-        return $this->friend;
-    }
-
-    public function setAddressList(AddressListInterface $addressList)
+    public function setAddressList(AddressListInterface $addressList): void
     {
         $this->addressList = $addressList;
     }
@@ -57,19 +49,9 @@ class User implements UserInterface
         return $this->addressList;
     }
 
-    public function setData(array $data): void
-    {
-        $this->data = $data;
-    }
-
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
     public function send(FriendInterface|GroupInterface $to, TextInterface $text)
     {
-        $this->serviceProvider->getSendMessageManager()->send($to, $text);
+        $this->serviceProvider->getSendMessageManager()->send($this, $to, $text);
     }
 
     public function sendFile(FriendInterface|GroupInterface $to, FileInterface $file)
@@ -90,5 +72,59 @@ class User implements UserInterface
     public function sendVideo(FriendInterface|GroupInterface $to, VideoInterface $video)
     {
         // TODO: Implement sendVideo() method.
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->data[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->data[$offset] ?? null;
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if (!isset($this->data[$offset])) {
+            $this->data[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        if (isset($this->data[$offset])) {
+            unset($this->data[$offset]);;
+        }
+    }
+
+    public function setData(array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function isLogin(): bool
+    {
+        return $this->status === UserStatus::LOGIN->value;
+    }
+
+    public function isOffline(): bool
+    {
+        return $this->status === UserStatus::OFFLINE->value;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
     }
 }

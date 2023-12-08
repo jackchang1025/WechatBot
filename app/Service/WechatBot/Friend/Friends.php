@@ -8,7 +8,7 @@ use App\Service\WechatBot\Exceptions\ConfirmLoginException;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 
-class Friends implements \App\Service\WechatBot\Friend\FriendInterface
+class Friends implements FriendInterface
 {
 
     public function __construct(protected readonly HttpService $httpService,protected array $data = [])
@@ -88,7 +88,7 @@ class Friends implements \App\Service\WechatBot\Friend\FriendInterface
         return $this->data['labelList']?? [];
     }
 
-    public function getV1(): string
+    public function getWechatId(): string
     {
         return $this->data['v1']?? '';
     }

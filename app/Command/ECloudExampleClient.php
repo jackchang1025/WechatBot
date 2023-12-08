@@ -85,7 +85,7 @@ class ECloudExampleClient extends HyperfCommand
                 default => throw new \Exception('暂不支持该消息类型'),
             };
 
-            $client->post($this->config->get('wechat.stores.ecloud.http_callback_url'), $data);
+            $client->post($this->config->get('wechat.http_callback_url'), $data);
         }
     }
 

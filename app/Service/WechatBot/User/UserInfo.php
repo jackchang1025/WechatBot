@@ -8,7 +8,7 @@ trait UserInfo {
      * 微信原始id
      * @return string
      */
-    public function getWxId(): string
+    public function getWechatId(): string
     {
         return $this->data['wcId'] ?? '';
     }
@@ -48,8 +48,4 @@ trait UserInfo {
         return $this->data['mobilePhone']?? '';
     }
 
-    public function getStatus(): string
-    {
-        return $this->data['status']?? '';
-    }
 }

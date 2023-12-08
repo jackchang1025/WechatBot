@@ -2,19 +2,16 @@
 
 namespace App\Service\ECloud;
 
-use App\Service\ECloud\Login\LoginManager;
-use App\Service\ECloud\Message\ReceiveMessage;
-use App\Service\ECloud\Message\ReceiveMessageHandle;
-use App\Service\WechatBot\Address\AddressInterface;
-use App\Service\WechatBot\Address\AddressManager;
-use App\Service\WechatBot\Friend\FriendInterface;
-use App\Service\WechatBot\Friend\Friends;
-use App\Service\WechatBot\Login\LoginManagerInterface;
-use App\Service\WechatBot\ReceiveMessage\ReceiveMessageHandleInterface;
-use App\Service\WechatBot\ReceiveMessage\ReceiveMessageInterface;
+use App\Service\ECloud\Address\RemoteAddressManager;
+use App\Service\ECloud\Friends\RemoteFriendManager;
+use App\Service\ECloud\Login\RemoteLoginManager;
+use App\Service\ECloud\Message\RemoteReceiveMessageHandle;
+use App\Service\WechatBot\Address\RemoteAddressManagerInterface;
+use App\Service\WechatBot\Friend\RemoteFriendManagerInterface;
+use App\Service\WechatBot\Login\RemoteLoginManagerInterface;
+use App\Service\WechatBot\ReceiveMessage\RemoteReceiveMessageHandleInterface;
 use App\Service\WechatBot\SendMessage\SendMessageManagerInterface;
 use App\Service\WechatBot\ServiceProviderInterface;
-use App\Service\WechatBot\User\User;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -22,17 +19,12 @@ use GuzzleHttp\Exception\GuzzleException;
 class ExampleServiceProviderAProvider implements ServiceProviderInterface
 {
 
-    const URL = 'https://api.weixin.qq.com/';
-
-    protected Client $httpClient;
-
     protected Config $config;
-    protected LoginManagerInterface $loginManager;
+    protected RemoteLoginManagerInterface $remoteLoginManager;
     protected HttpService $httpService;
-    protected FriendInterface $friend;
-    protected AddressInterface $address;
-    protected ReceiveMessageInterface $receiveMessage;
-    protected ReceiveMessageHandleInterface $messageHandle;
+    protected RemoteFriendManagerInterface $remoteFriendManager;
+    protected RemoteAddressManagerInterface $remoteAddressManager;
+    protected RemoteReceiveMessageHandleInterface $remoteReceiveMessageHandle;
 
     /**
      * @param array $options
@@ -48,44 +40,32 @@ class ExampleServiceProviderAProvider implements ServiceProviderInterface
             throw new \Exception('password is empty');
         }
 
-        $this->config         = new Config($options);
-        $this->httpClient     = new Client(['base_uri' => $this->config->get('base_uri')]);
-        $this->httpService    = new HttpService($this->httpClient, $this->config);
-        $this->loginManager   = new LoginManager($this->httpService, $this->config);
-        $this->friend         = new Friends($this->httpService);
-        $this->address        = new AddressManager($this->httpService, $this->config);
-        $this->receiveMessage = new ReceiveMessage($this->httpService, $this->config);
-        $this->messageHandle  = new ReceiveMessageHandle();
+        $this->config                     = new Config($options);
+        $this->httpService                = new HttpService(new Client(['base_uri' => $this->config->get('base_uri')]), $this->config);
+        $this->remoteLoginManager         = new RemoteLoginManager($this->httpService, $this->config);
+        $this->remoteFriendManager        = new RemoteFriendManager($this->httpService);
+        $this->remoteAddressManager       = new RemoteAddressManager($this->httpService, $this->config);
+        $this->remoteReceiveMessageHandle = new RemoteReceiveMessageHandle();
     }
 
-    public function getLoginManager(): LoginManagerInterface
+    public function getRemoteLoginManager(): RemoteLoginManagerInterface
     {
-        return $this->loginManager;
+        return $this->remoteLoginManager;
     }
 
-    public function getFriendsManager(): FriendInterface
+    public function getRemoteFriendManager(): RemoteFriendManagerInterface
     {
-        return $this->friend;
+        return $this->remoteFriendManager;
     }
 
-    public function getAddressManager(): AddressInterface
+    public function getRemoteAddressManager(): RemoteAddressManagerInterface
     {
-        return $this->address;
+        return $this->remoteAddressManager;
     }
 
-    public function getReceiveMessageHandle(): ReceiveMessageHandleInterface
+    public function getRemoteReceiveMessageHandle(): RemoteReceiveMessageHandleInterface
     {
-        return $this->messageHandle;
-    }
-
-    public function getMomentsManager()
-    {
-        // TODO: Implement getMomentsManager() method.
-    }
-
-    public function receiveMessage(): ReceiveMessageInterface
-    {
-        return $this->receiveMessage;
+        return $this->remoteReceiveMessageHandle;
     }
 
     public function getConfig(): Config
@@ -97,4 +77,5 @@ class ExampleServiceProviderAProvider implements ServiceProviderInterface
     {
         // TODO: Implement getSendMessageManager() method.
     }
+
 }

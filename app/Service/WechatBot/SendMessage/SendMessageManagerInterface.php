@@ -9,10 +9,11 @@ use App\Service\WechatBot\SendMessage\MessageFormat\ImageInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\TextInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\VideoInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\VoiceInterface;
+use App\Service\WechatBot\User\UserInterface;
 
 interface SendMessageManagerInterface
 {
-    public function send(FriendInterface|GroupInterface $to, TextInterface $text);
+    public function send(UserInterface $user,FriendInterface|GroupInterface $to, TextInterface $text);
 
     public function sendFile(FriendInterface|GroupInterface $to, FileInterface $file);
 

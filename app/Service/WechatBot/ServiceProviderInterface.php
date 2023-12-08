@@ -3,23 +3,21 @@
 namespace App\Service\WechatBot;
 
 use App\Service\ECloud\Config;
-use App\Service\WechatBot\Address\AddressInterface;
-use App\Service\WechatBot\Friend\FriendInterface;
-use App\Service\WechatBot\Login\LoginManagerInterface;
-use App\Service\WechatBot\ReceiveMessage\ReceiveMessageHandleInterface;
+use App\Service\WechatBot\Address\RemoteAddressManagerInterface;
+use App\Service\WechatBot\Friend\RemoteFriendManagerInterface;
+use App\Service\WechatBot\Login\RemoteLoginManagerInterface;
+use App\Service\WechatBot\ReceiveMessage\RemoteReceiveMessageHandleInterface;
 use App\Service\WechatBot\SendMessage\SendMessageManagerInterface;
 
 interface ServiceProviderInterface
 {
-    public function getLoginManager(): LoginManagerInterface;
+    public function getRemoteLoginManager(): RemoteLoginManagerInterface;
 
-    public function getFriendsManager(): FriendManagerInterface;
+    public function getRemoteFriendManager(): RemoteFriendManagerInterface;
 
-    public function getAddressManager(): AddressManagerInterface;
+    public function getRemoteAddressManager(): RemoteAddressManagerInterface;
 
-    public function getReceiveMessageHandle():ReceiveMessageHandleInterface;
-
-    public function getMomentsManager():MomentsManagerInterface;
+    public function getRemoteReceiveMessageHandle():RemoteReceiveMessageHandleInterface;
 
     public function getConfig():Config;
 

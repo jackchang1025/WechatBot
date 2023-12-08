@@ -14,6 +14,8 @@ class LoginRequest extends FormRequest
         'login'            => ['account', 'password'],
         'getQRCode'        => ['wcId', 'proxy', 'proxyIp', 'proxyUser', 'proxyPassword'],
         'getIPadLoginInfo' => ['wId'],
+        'initAddressList'  => ['wId'],
+        'getAddressList'   => ['wId'],
     ];
 
     /**

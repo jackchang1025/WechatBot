@@ -1,0 +1,214 @@
+@startuml WechatBot_Class_Diagram
+
+interface ServiceProviderInterface{
+     public function getRemoteLoginManager(): RemoteLoginManagerInterface;
+     public function getRemoteFriendManager(): RemoteFriendManagerInterface;
+     public function getRemoteAddressManager(): RemoteAddressManagerInterface;
+     public function getRemoteReceiveMessageHandle():RemoteReceiveMessageHandleInterface;
+     public function getConfig():Config;
+     public function getSendMessageManager():SendMessageManagerInterface;
+}
+note right of ServiceProviderInterface: 服务提供者接口，定义了与远程服务交互的核心方法
+
+class ExampleServiceProviderAProvider implements ServiceProviderAProviderInterface {
+    protected Client $httpClient;
+    protected Config $config;
+    protected RemoteLoginManagerInterface $loginManager;
+    protected HttpService $httpService;
+    protected RemoteFriendManagerInterface $friend;
+    protected RemoteAddressManagerInterface $address;
+    protected RemoteReceiveMessageInterface $receiveMessage;
+    protected RemoteReceiveMessageHandleInterface $messageHandle;
+
+     public function getRemoteLoginManager(): RemoteLoginManagerInterface;
+     public function getRemoteFriendManager(): RemoteFriendManagerInterface;
+     public function getRemoteAddressManager(): RemoteAddressManagerInterface;
+     public function getRemoteReceiveMessageHandle():RemoteReceiveMessageHandleInterface;
+     public function getConfig():Config;
+     public function getSendMessageManager():SendMessageManagerInterface;
+}
+note right of ExampleServiceProviderAProvider: 服务提供者接口，服务提供者具体实现，负责创建和管理与远程服务的通信
+
+class Config {
+}
+note right of Config: 配置文件
+
+class HttpService {
+}
+note right of HttpService: HTTP服务类，提供与远程API的HTTP通信功能
+
+class RemoteLoginManager implements RemoteLoginManagerInterface {
+}
+note right of RemoteLoginManager: 处理远程服务的登录逻辑
+
+class RemoteFriendManager implements RemoteFriendManagerInterface {
+}
+note right of RemoteFriendManager: 处理远程服务的好友逻辑
+
+class RemoteAddressManager implements RemoteAddressManagerInterface {
+}
+note right of RemoteAddressManager: 处理远程服务的通讯录逻辑
+
+class RemoteReceiveMessageHandle implements RemoteReceiveMessageHandleInterface {
+}
+note right of RemoteReceiveMessageHandle: 转换接收消息格式
+
+
+class WechatBot {
+    protected UserInterface $user
+}
+note right of WechatBot: 管理整个微信机器人的生命周期
+
+interface SendInterface{
+    public function send(FriendInterface|GroupInterface $to, TextInterface $text);
+    public function sendFile(FriendInterface|GroupInterface $to, FileInterface $file);
+    public function sendImage(FriendInterface|GroupInterface $to, ImageInterface $image);
+    public function sendVoice(FriendInterface|GroupInterface $to, VoiceInterface $voice);
+    public function sendVideo(FriendInterface|GroupInterface $to, VideoInterface $video);
+}
+
+interface UserInterface extends SendInterface
+{
+    public function getWxId(): string;
+    public function getNickName(): string;
+    public function getDeviceType(): string;
+    public function getUin(): int;
+    public function getHeadUrl(): string;
+    public function getWAccount(): string;
+    public function getSex(): int;
+    public function getMobilePhone(): string;
+    public function getStatus(): string;
+    public function setGroupList(GroupListInterface $groupList);
+    public function getGroupList(): GroupListInterface;
+    public function setFriend(?FriendInterface $friend);
+    public function getFriend(): ?FriendInterface;
+    public function setAddressList(AddressListInterface $addressList);
+    public function getAddressList(): AddressListInterface;
+
+}
+
+interface RemoteLoginManagerInterface
+{
+    public function login();
+    public function getQRCode(): QRCodeResponseInterface;
+    public function getUserInfo(): UserResponseInterface;
+}
+
+interface RemoteAddressManagerInterface
+{
+    public function initAddressList();
+}
+
+interface RemoteFriendManagerInterface
+{
+}
+
+interface RemoteReceiveMessageHandleInterface
+{
+    public function receiveMessageHandle(ReceiveMessageResponseInterface $receiveMessageResponse);
+    public function dataToMessageFormat(array $data):MessageInterface;
+}
+
+interface MessageInterface
+{
+    public function getContent(): string;
+    public function getFromUser(): string;
+    public function getMsgId(): int;
+    public function getNewMsgId(): int;
+    public function getSelf(): bool;
+    public function getTimestamp(): int;
+    public function getToUser(): string;
+    public function getWId(): string;
+    public function getOptions(): array;
+    public function getData(): array;
+    public function getWcId(): string;
+    public function getAccount(): string;
+    public function toUser(): UserInterface;
+}
+
+note top of MessageInterface : MessageInterface
+
+interface PrivateChatMessageInterface extends MessageInterface
+{
+    public function toFromUser(): FriendInterface;
+}
+
+interface GroupChatMessageInterface extends MessageInterface
+{
+    public function toFromGroup():GroupInterface;
+}
+interface TextMessageInterface extends PrivateChatMessageInterface,GroupChatMessageInterface
+{
+}
+interface ImageMessageInterface extends PrivateChatMessageInterface,GroupChatMessageInterface
+{
+    public function getImg():string;
+    public function downloadImage();
+}
+
+interface AddressListInterface
+{
+    public function getAddressList();
+    public function getAddress(int $wechatId): ?FriendInterface;
+}
+
+interface GroupListInterface
+{
+    public function getGroupList();
+    public function getGroup(string $groupId) : GroupInterface;
+}
+
+interface FriendInterface{}
+
+interface GroupInterface
+{
+    public function getGroupId(): string;
+}
+
+class Server {
+    wechatBot = $wechatBot
+}
+
+class BotManager {
+    +Map<String, WechatBot> bots
+    public function createBot()
+    public function deleteBot()
+    public function modifyBot()
+}
+
+WechatBot *-- ServiceProviderAProviderInterface : $serviceProvider
+note right on link : 服务提供者
+
+WechatBot *-- UserInterface : $user
+note right on link : 中间件服务
+
+
+UserInterface *-- AddressListInterface : getAddressList()
+UserInterface *-- GroupListInterface : getGroupList()
+
+AddressListInterface *-- FriendInterface : getAddress()
+GroupListInterface *-- GroupInterface : getGroup()
+
+ExampleServiceProviderAProvider *-- Config : $config
+ExampleServiceProviderAProvider *-- GuzzleHttp\Client : $httpClient
+ExampleServiceProviderAProvider *-- HttpService : $httpService
+ExampleServiceProviderAProvider *-- RemoteLoginManager : $remoteLoginManager
+ExampleServiceProviderAProvider *-- RemoteFriendManager : $remoteFriendManager
+ExampleServiceProviderAProvider *-- RemoteAddressManager : $remoteAddressManager
+ExampleServiceProviderAProvider *-- RemoteReceiveMessageHandle : $remoteReceiveMessageHandle
+
+HttpService *-- GuzzleHttp\Client : $httpClient
+
+ServiceProviderAProviderInterface *-- RemoteLoginManagerInterface : getRemoteLoginManager()
+ServiceProviderAProviderInterface *-- RemoteFriendManagerInterface : getRemoteFriendManager()
+ServiceProviderAProviderInterface *-- RemoteAddressManagerInterface : getRemoteAddressManager()
+ServiceProviderAProviderInterface *-- RemoteReceiveMessageHandleInterface : getRemoteReceiveMessageHandle()
+
+MessageInterface *-- UserInterface : toUser()
+PrivateChatMessageInterface *-- FriendInterface : toFromUser()
+GroupChatMessageInterface *-- GroupInterface : toFromGroup()
+RemoteReceiveMessageHandleInterface *-- MessageInterface : dataToMessageFormat()
+
+BotManager *-- WechatBot : bots
+
+@enduml

@@ -19,6 +19,7 @@ interface MessageInterface
     public function getTimestamp(): int;
 
     public function getToUser(): string;
+    public function getFromGroup(): string;
 
     public function getWId(): string;
 

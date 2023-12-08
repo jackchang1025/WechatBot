@@ -11,14 +11,16 @@ use App\Service\WechatBot\SendMessage\MessageFormat\ImageInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\TextInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\VideoInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\VoiceInterface;
+use App\Service\WechatBot\User\Login\LoginManagerInterface;
 
-interface UserInterface
+interface UserInterface extends \ArrayAccess
 {
+
     /**
      * 微信id(唯一值）
      * @return string
      */
-    public function getWxId(): string;
+    public function getWechatId(): string;
 
     /**
      * 昵称
@@ -61,19 +63,25 @@ interface UserInterface
      */
     public function getMobilePhone(): string;
 
+    //是否登录
+    public function isLogin(): bool;
+
+    //是否掉线
+    public function isOffline(): bool;
+
+    public function setData(array $data): void;
+
     /**
      * 保留字段
      * @return string
      */
     public function getStatus(): string;
 
+    public function setStatus(string $status): void;
+
     public function setGroupList(GroupListInterface $groupList);
 
     public function getGroupList(): GroupListInterface;
-
-    public function setFriend(?FriendInterface $friend);
-
-    public function getFriend(): ?FriendInterface;
 
     public function setAddressList(AddressListInterface $addressList);
 

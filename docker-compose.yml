@@ -28,9 +28,18 @@ services:
       - hyperf-skeleton_db_data:/var/lib/mysql
     networks:
       - hyperf-net
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - hyperf-skeleton_redis_data:/data
+    networks:
+      - hyperf-net
 
 volumes:
   hyperf-skeleton_db_data:
+  hyperf-skeleton_redis_data:
 
 networks:
   hyperf-net:
