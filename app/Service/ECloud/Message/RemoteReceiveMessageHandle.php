@@ -20,15 +20,14 @@ class RemoteReceiveMessageHandle implements RemoteReceiveMessageHandleInterface
 
     /**
      * @param array $data
-     * @param UserInterface $user
-     * @return MessageInterface
+     * @return ImageMessage|MessageInterface|TextMessage
      * @throws \Exception
      */
-    public function dataToMessageFormat(array $data, UserInterface $user): MessageInterface
+    public function dataToMessageFormat(array $data): ImageMessage|MessageInterface|TextMessage
     {
         return match ($data['messageType']) {
-            MessageType::Text->value => new TextMessage($user,$data),
-            MessageType::Image->value => new ImageMessage($user,$data),
+            MessageType::Text->value => new TextMessage($data),
+            MessageType::Image->value => new ImageMessage($data),
 //            MessageType::Video->value => new TextMessage($data),
             default => throw new \Exception('暂不支持该消息类型'),
         };

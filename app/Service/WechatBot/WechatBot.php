@@ -2,66 +2,59 @@
 
 namespace App\Service\WechatBot;
 
-use App\Event\LoginQRCodeEvent;
-use App\Event\receiveMessageEvent;
-use App\Event\UserInitEvent;
-use App\Service\ECloud\ExampleServiceProviderAProvider;
-use App\Service\WechatBot\User\UserManagerInterface;
+use App\Service\WechatBot\Middleware\Pipeline;
+use App\Service\WechatBot\Middleware\TraitMiddleware;
+use App\Service\WechatBot\ReceiveMessage\MessageFormat\MessageInterface;
+use App\Service\WechatBot\User\UserInterface;
 use Hyperf\Context\ApplicationContext;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Swoole\Coroutine\Http\Server;
-use Swoole\Http\Request;
-use Swoole\Http\Response;
 
- class WechatBot implements WechatBotInterface
+class WechatBot implements WechatBotInterface
 {
+    use TraitMiddleware;
+
+    protected MessageInterface $message;
 
     public function __construct(
-        protected UserManagerInterface $userManager,
         protected ServiceProviderInterface $serviceProvider,
+        protected UserInterface $user,
     ) {
+
+        $this->setPipeline(new Pipeline(ApplicationContext::getContainer()));
     }
 
     public function start()
     {
-        $user = $this->userManager->getUserManager();
+        $message = $this->getMessage();
 
-        if (!$user->isLogin()) {
+        try {
 
-            //登录
-            $this->userManager->getLoginManager()->login();
+            $this->receiveMessageHandle($message);
 
-            //获取二维码
-            $response = $this->userManager->getLoginManager()->getQRCode();
-            ApplicationContext::getContainer()->get(EventDispatcherInterface::class)->dispatch(new LoginQRCodeEvent($response));
+        } catch (\Exception $e) {
 
-            //获取用户信息
-            $user = $this->userManager->getLoginManager()->getUserInfo();
-            ApplicationContext::getContainer()->get(EventDispatcherInterface::class)->dispatch(new UserInitEvent($user));
+            $this->handleException();
         }
-
-        //获取通讯录列表
-//        $addressList = $this->userManager->getAddressManager()->getAddressList();
-
-//        var_dump($addressList->getAddressList());
-
     }
 
-    public function getUserManager(): UserManagerInterface
+    public function getUserManager(): UserInterface
     {
-        return $this->userManager;
+        return $this->user;
     }
 
-    public function receiveMessageHandle(array $data): void
+    public function handleException()
     {
-        $message = $this->serviceProvider->getRemoteReceiveMessageHandle()->dataToMessageFormat(
-            $data,
-            $this->getUserManager()->getUserManager()
-        );
-        ApplicationContext::getContainer()->get(EventDispatcherInterface::class)->dispatch(
-            new ReceiveMessageEvent($message)
-        );
-//
-//        return $this->middleware->setData($message)->handle();
+    }
+
+    public function getMessage(): ReceiveMessage\MessageFormat\MessageInterface
+    {
+        $this->message ??= $this->serviceProvider->getMessage();
+
+        return $this->message;
+    }
+
+    public function receiveMessageHandle(MessageInterface $message): mixed
+    {
+        $message->setUser($this->user->findUser($message->getFromUser()));
+        return $this->thenHandle($message);
     }
 }

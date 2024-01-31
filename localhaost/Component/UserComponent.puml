@@ -1,0 +1,74 @@
+@startuml
+package "UserManage" {
+    actor User
+
+    database "RepositoryInterface" {
+        json datastore {
+           "status": "Online",
+           "data": {},
+           "messageList": [{}],
+           "AddressList": [
+             {"Friends": {}},
+             {"Group": {}}
+           ]
+        }
+        note right: 用户数据存储
+    }
+
+    package "User Management" #DDDDDD {
+        component "UserAction" {
+            component "login"
+            component "logout"
+
+        }
+        note right of UserAction: 用户登录与登出操作
+    }
+
+    package "Address Management" #FFCCAA {
+        component "AddressList"
+        note right of AddressList: 通讯录列表
+
+        package "Friends & Groups" #FAEFD1 {
+            component "Friends"
+            note right of Friends: 好友
+
+            component "Group"
+            note right of Group: 群聊
+        }
+    }
+
+    package "Action Processing" #CCCCFF {
+        component "FriendsGroupAction" {
+            component "sendMessage"
+            component "curd"
+
+        }
+        note right of FriendsGroupAction: 好友和群组动作
+    }
+
+    cloud "Remote Services" #AAAAAA {
+        component "RemoteServiceClient" {
+            json data {
+                "InstanceId": "远程服务实例ID,由服务器返回"
+            }
+            component "httpClientInterface"
+            note right of httpClientInterface: 客户端与远程服务通信
+        }
+        component "RemoteServiceInterface"
+        note top of "RemoteServiceInterface": 第三方远程服务
+
+        cloud "wechatService"
+        note top of "wechatService": wechat服务器
+    }
+
+    User --> "User Management": 使用
+    "User Management" --> "Address Management": 管理通讯录
+    "Address Management" --> "Action Processing": 触发动作
+    "Action Processing" --> "Remote Services": 远程交互
+    "RemoteServiceClient" ..> "RemoteServiceInterface": 发送数据\n需要携带实例ID
+    "RemoteServiceInterface" ..> "wechatService": 远程通信
+    "RepositoryInterface" <.. "User Management": 数据存储/检索
+    "RepositoryInterface" <.. "Action Processing": 数据更新
+}
+
+@enduml

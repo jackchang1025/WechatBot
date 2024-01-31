@@ -31,6 +31,6 @@ interface MessageInterface
 
     public function getAccount(): string;
 
-    public function toUser(): UserInterface;
+    public function toUser(): ?UserInterface;
 
 }

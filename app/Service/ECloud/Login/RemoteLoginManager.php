@@ -2,60 +2,35 @@
 
 namespace App\Service\ECloud\Login;
 
-use App\Service\ECloud\Config;
-use App\Service\ECloud\Enum\AccountStatus;
-use App\Service\ECloud\HttpService;
+use App\Service\ECloud\Config\ConfigInterface;
+use App\Service\OneBotECloud\HttpService\TraitHttpClient;
 use App\Service\WechatBot\Exceptions\AccountStatusException;
 use App\Service\WechatBot\Exceptions\ApiResponseException;
 use App\Service\WechatBot\Exceptions\ConfirmLoginException;
-use App\Service\WechatBot\Login\RemoteLoginManagerInterface;
 use App\Service\WechatBot\Login\QRCodeResponseInterface;
+use App\Service\WechatBot\Login\RemoteLoginManagerInterface;
+use App\Service\WechatBot\User\Login\UserResponseInterface;
 use GuzzleHttp\Exception\GuzzleException;
 
 readonly class RemoteLoginManager implements RemoteLoginManagerInterface
 {
     /**
-     * @param HttpService $httpService
-     * @param Config $config
+     * @param TraitHttpClient $httpService
+     * @param ConfigInterface $config
      */
-    public function __construct(protected HttpService $httpService, protected Config $config)
+    public function __construct(protected TraitHttpClient $httpService, protected ConfigInterface $config)
     {
-    }
-
-    /**
-     * 初始化登录
-     * @return array
-     * @throws AccountStatusException
-     * @throws GuzzleException|ApiResponseException|ConfirmLoginException
-     */
-    public function login(): array
-    {
-        $response = $this->httpService->post('/member/login', [
-            'account'  => $this->config->get('account'),
-            'password' => $this->config->get('password'),
-        ]);
-
-        if ($response['status'] != AccountStatus::NORMAL->value) {
-            $status = AccountStatus::from($response['status']);
-            throw new AccountStatusException($status->getDescription());
-        }
-
-        // 登录成功逻辑
-        $this->config->set('Authorization', $response['Authorization']);
-        $this->config->set('callbackUrl', $response['callbackUrl']);
-        $this->config->set('status', $response['status']);
-
-        return $response;
     }
 
     /**
      * 获取二维码
+     * @param string $wechatId
      * @return QRCodeResponseInterface
      * @throws ApiResponseException
      * @throws ConfirmLoginException
-     * @throws GuzzleException
+     * @throws GuzzleException|AccountStatusException
      */
-    public function getQRCode(): QRCodeResponseInterface
+    public function getQRCode(string $wechatId = ''): QRCodeResponseInterface
     {
         $response = $this->httpService->post('/iPadLogin', [
             'wcId'          => $this->config->get('wcId',''),
@@ -80,22 +55,20 @@ readonly class RemoteLoginManager implements RemoteLoginManagerInterface
     }
 
     /**
-     * @return array
+     * @return UserResponseInterface
      * @throws ApiResponseException
      * @throws ConfirmLoginException
      * @throws GuzzleException
      */
-    public function getUserInfo(): array
+    public function getUserInfo(): UserResponseInterface
     {
         try {
             $response = $this->getIPadLoginInfo();
         } catch (ConfirmLoginException $e) {
             $response = $this->getIPadLoginInfo($e->getVerifyCode());
-
-            $this->config->set('wcId',$response['wcId']);
         }
 
-        return $response;
+        return new UserResponse($response);
     }
 
     /**

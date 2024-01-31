@@ -2,8 +2,8 @@
 
 namespace App\Service\ECloud\Message;
 
-use App\Service\ECloud\Config;
-use App\Service\ECloud\HttpService;
+use App\Service\ECloud\ConfigTrait;
+use App\Service\OneBotECloud\HttpService\TraitHttpClient;
 use App\Service\WechatBot\Friend\FriendInterface;
 use App\Service\WechatBot\Group\GroupInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\FileInterface;
@@ -16,7 +16,7 @@ use App\Service\WechatBot\User\UserInterface;
 
 class SendRemoteMessageManager implements SendMessageManagerInterface
 {
-    public function __construct(protected HttpService $httpService,protected Config $config)
+    public function __construct(protected TraitHttpClient $httpService,protected ConfigTrait $config)
     {
     }
 

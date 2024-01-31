@@ -2,16 +2,16 @@
 
 namespace App\Service\WechatBot\Friend;
 
-use App\Service\ECloud\HttpService;
+use App\Service\OneBotECloud\HttpService\TraitHttpClient;
 use App\Service\WechatBot\Exceptions\ApiResponseException;
 use App\Service\WechatBot\Exceptions\ConfirmLoginException;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 
-class Friends implements FriendInterface
+class Friend implements FriendInterface
 {
 
-    public function __construct(protected readonly HttpService $httpService,protected array $data = [])
+    public function __construct(protected array $data = [])
     {
     }
 
@@ -19,7 +19,7 @@ class Friends implements FriendInterface
      * 获取联系人信息
      * @param string $wcId
      * @param string $wId
-     * @return Friends
+     * @return Friend
      * @throws GuzzleException
      * @throws ApiResponseException
      * @throws ConfirmLoginException
@@ -35,7 +35,7 @@ class Friends implements FriendInterface
             'wcId' => $wcId,
         ]);
 
-        return new Friends($this->httpService,$response);
+        return new Friend($this->httpService,$response);
     }
 
     public function getUserName(): string

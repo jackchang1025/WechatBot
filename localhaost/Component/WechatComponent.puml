@@ -1,0 +1,50 @@
+@startuml
+package "WechatBot Service" {
+
+    actor Client
+    component WechatBot {
+        note left of WechatBot: 机器人生命周期管理
+    }
+
+    package "User" {
+        component "登录退出"
+        component "消息发送"
+        component "好友操作"
+        component "群操作"
+    }
+
+    package "Message Processing" {
+
+        component "WechatBotReceiveMessage" {
+            component "receiveMessageService"
+            note right of receiveMessageService: 消息接收处理
+        }
+    }
+
+    cloud "Remote Services" {
+        component "RemoteServiceClient" {
+
+        }
+        component "RemoteServiceInterface"
+        note top of RemoteServiceInterface: 第三方远程服务接口
+
+        cloud WechatService
+        note left of WechatService: wechat服务器
+    }
+
+    database "RepositoryInterface"
+    note right of RepositoryInterface: 用户数据和消息的存储
+
+    Client --> WechatBot: 用户交互
+    WechatBot --> User: 机器人绑定用户
+    WechatBot --> "Message Processing": 监听远程消息
+
+    "User" -[#blue]-> "RemoteServiceClient": 发送消息
+    "User" ..> "RepositoryInterface": 数据存储/检索
+    "RemoteServiceClient" -[#blue]-> "RemoteServiceInterface": 发送远程消息
+    "RemoteServiceInterface" -[#blue]-> WechatService: 发送远程消息
+    "RemoteServiceInterface" <-[#red]- WechatService: 接收远程消息
+    "RemoteServiceInterface" -[#red]-> "Message Processing": 接收远程消息
+}
+
+@enduml

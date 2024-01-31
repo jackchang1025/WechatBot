@@ -10,25 +10,25 @@ use App\Service\WechatBot\WechatBotInterface;
 trait Message
 {
 
-    public function __construct(protected UserInterface $user,protected array $options)
+    public function __construct(protected array $options,protected ?UserInterface $user = null)
     {
     }
 
-    public function toUser(): UserInterface
+    public function setUser(UserInterface $user): void
     {
-        // 获取接收消息的用户ID
-//        $userId = $this->getToUser(); // 假设 getToUser() 接收微信id
+        $this->user = $user;
+    }
 
-        //获取用户信息的逻辑
+
+    public function toUser(): ?UserInterface
+    {
         return $this->user;
     }
 
     public function toFromGroup(): GroupInterface
     {
         //透过 toUser 找到用户 getGroupList 找到群列表 getGroup 找到群信息
-        return $this->toUser()
-            ->getGroupList()
-            ->getGroup($this->getFromGroup());
+        return $this->toUser()?->findGroup($this->getFromGroup());
     }
 
     /**
@@ -38,12 +38,8 @@ trait Message
 
     public function toFromUser(): FriendInterface
     {
-        $friendId = $this->getFromUser(); // 假设 getFromUser() 发送微信id
-
         //透过 toUser 找到用户 getAddressList 找到用户通讯录 getAddress 找到好友
-        return $this->toUser()
-            ->getAddressList()
-            ->getAddress($friendId);
+        return $this->toUser()?->findFriend($this->getFromUser());
     }
 
 

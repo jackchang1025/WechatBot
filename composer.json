@@ -34,7 +34,9 @@
         "hyperf/redis": "^3.0",
         "hyperf/validation": "^3.0",
         "hyperf/websocket-client": "^3.0",
-        "hyperf/websocket-server": "^3.0"
+        "hyperf/websocket-server": "^3.0",
+        "illuminate/http": "10.*",
+        "weijiajia/bot": "dev-main"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -70,6 +72,12 @@
         "sort-packages": true
     },
     "extra": [],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/opt/packagist/weijiajiaBot"
+        }
+    ],
     "scripts": {
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

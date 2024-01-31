@@ -1,0 +1,73 @@
+@startuml
+
+cloud "wechatService" #LightGreen
+note left of "wechatService": wechat服务器
+
+package RemoteService #LightPink {
+    cloud "RemoteServiceA" #LightBlue
+    cloud "RemoteServiceB" #LightBlue
+}
+
+package RemoteServiceClientDriveInterface {
+    component RemoteServiceClientDriveA
+    component RemoteServiceClientDriveB
+}
+
+cloud "Service" #LightGray {
+    component "swoole"
+    component "workman"
+    component "HTTP" #Yellow
+    component "WebSocket" #Yellow
+    component "Webhook" #Yellow
+    component "Sockets" #Yellow
+}
+
+package BotManager #LightPink {
+    component BotA
+    component BotB
+}
+
+component OneBot12 #CCCFFF
+note right of OneBot12:  OneBot12 标准
+
+package MessageFormat #LightPink {
+   component "messageA" #LightCoral {
+       json dataA {
+           "code": "1000",
+           "wcId": "微信id",
+           "messageType": "消息类型",
+           "data": []
+   }
+   note right of "dataA": 第三方服务发送的消息格式
+
+   component "messageB" #CCCFFF {
+      json dataB {
+          "code": "1000",
+          "wcId": "微信id",
+          "messageType": "消息类型",
+          "data": []
+   }
+   note right of "dataB": 第三方服务发送的消息格式
+}
+
+RemoteServiceClientDriveInterface .[#blue].> OneBot12 : "format OneBot12 to RemoteService"
+RemoteServiceClientDriveInterface .[#red].> OneBot12 : "format RemoteService to OneBot12"
+
+BotA .[#blue].> OneBot12 : send message
+OneBot12 .[#blue].> "HTTP" : send message
+OneBot12 .[#blue].> "WebSocket" : send message
+OneBot12 .[#blue].> "Webhook" : send message
+OneBot12 .[#blue].> "Sockets" : send message
+
+RemoteServiceClientDriveA --> messageA
+RemoteServiceClientDriveB --> messageB
+
+"Service" .[#blue].> "RemoteService" : send message
+"RemoteService" .[#blue].> "wechatService" : send message
+
+"wechatService" .[#red].> "RemoteService" : receive message
+"RemoteService" .[#red].> "Service" : receive message
+"Service" .[#red].> "RemoteServiceClientDriveInterface" : handle receive message
+"RemoteServiceClientDriveInterface" .[#red].> "BotA" : receive message
+
+@enduml

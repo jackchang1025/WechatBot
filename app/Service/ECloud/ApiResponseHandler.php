@@ -4,18 +4,20 @@ namespace App\Service\ECloud;
 
 use App\Service\WechatBot\Exceptions\ApiResponseException;
 use App\Service\WechatBot\Exceptions\ConfirmLoginException;
-use Psr\Http\Message\ResponseInterface;
+use App\Service\WechatBot\ResponseInterface;
+use Illuminate\Http\Client\Response;
 
 class ApiResponseHandler
 {
     /**
-     * @param ResponseInterface $response
-     * @return array
-     * @throws ApiResponseException|ConfirmLoginException
+     * @param Response $response
+     * @return Response
+     * @throws ApiResponseException
+     * @throws ConfirmLoginException
      */
-    public static function handleResponse(ResponseInterface $response): array
+    public static function handleResponse(Response $response): Response
     {
-        $data = json_decode($response->getBody(), true);
+        $data = $response->object();
 
         if (!$data || !isset($data['code']) || !isset($data['data'])) {
             throw new ApiResponseException('响应格式错误或缺少必要字段', 0);
@@ -30,6 +32,6 @@ class ApiResponseHandler
             throw new ApiResponseException($data['message'] ?? '未知错误', $data['code'], $data);
         }
 
-        return $data['data'];
+        return $response;
     }
 }

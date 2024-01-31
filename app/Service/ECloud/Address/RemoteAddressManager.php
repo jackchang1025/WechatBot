@@ -2,21 +2,20 @@
 
 namespace App\Service\ECloud\Address;
 
-use App\Service\ECloud\Config;
-use App\Service\ECloud\HttpService;
+use App\Service\ECloud\Config\ConfigInterface;
+use App\Service\OneBotECloud\HttpService\TraitHttpClient;
 use App\Service\WechatBot\Address\AddressList;
 use App\Service\WechatBot\Address\AddressListInterface;
 use App\Service\WechatBot\Address\RemoteAddressManagerInterface;
 use App\Service\WechatBot\Exceptions\ApiResponseException;
 use App\Service\WechatBot\Exceptions\ConfirmLoginException;
-use App\Service\WechatBot\GroupList\GroupList;
 use GuzzleHttp\Exception\GuzzleException;
 
- class RemoteAddressManager implements RemoteAddressManagerInterface
+class RemoteAddressManager implements RemoteAddressManagerInterface
 {
     public function __construct(
-        protected HttpService $httpService,
-        protected Config $config,
+        protected TraitHttpClient $httpService,
+        protected ConfigInterface $config,
     )
     {
     }

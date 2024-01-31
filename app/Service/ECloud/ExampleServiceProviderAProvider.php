@@ -2,65 +2,67 @@
 
 namespace App\Service\ECloud;
 
-use App\Service\ECloud\Address\RemoteAddressManager;
-use App\Service\ECloud\Friends\RemoteFriendManager;
-use App\Service\ECloud\Login\RemoteLoginManager;
+use App\Service\ECloud\Config\Config;
+use App\Service\ECloud\Config\ConfigInterface;
+use App\Service\OneBotECloud\HttpService\TraitAccessToken;
+use App\Service\OneBotECloud\HttpService\TraitAddress;
+use App\Service\OneBotECloud\HttpService\TraitHttpClient;
+use App\Service\OneBotECloud\HttpService\TraitLogin;
 use App\Service\ECloud\Message\RemoteReceiveMessageHandle;
-use App\Service\WechatBot\Address\RemoteAddressManagerInterface;
-use App\Service\WechatBot\Friend\RemoteFriendManagerInterface;
-use App\Service\WechatBot\Login\RemoteLoginManagerInterface;
+use App\Service\WechatBot\Exceptions\AccountStatusException;
+use App\Service\WechatBot\Exceptions\ConfigException;
+use App\Service\WechatBot\ReceiveMessage\MessageFormat\MessageInterface;
 use App\Service\WechatBot\ReceiveMessage\RemoteReceiveMessageHandleInterface;
-use App\Service\WechatBot\SendMessage\SendMessageManagerInterface;
 use App\Service\WechatBot\ServiceProviderInterface;
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\Request;
+use Psr\Http\Message\ResponseInterface;
 
 class ExampleServiceProviderAProvider implements ServiceProviderInterface
 {
 
-    protected Config $config;
-    protected RemoteLoginManagerInterface $remoteLoginManager;
-    protected HttpService $httpService;
-    protected RemoteFriendManagerInterface $remoteFriendManager;
-    protected RemoteAddressManagerInterface $remoteAddressManager;
+    use TraitLogin;
+//    use TraitAccessToken;
+//    use TraitAddress;
+    use TraitHttpClient;
+
+    protected ConfigInterface $config;
+    protected Request $request;
     protected RemoteReceiveMessageHandleInterface $remoteReceiveMessageHandle;
 
     /**
-     * @param array $options
-     * @throws Exception|GuzzleException
+     *
+     * @throws ConfigException|AccountStatusException
      */
-    public function __construct(array $options = [])
+    public function __construct(array $config)
     {
-        if (empty($options['account'])) {
-            throw new \Exception('account is empty');
-        }
+//        if (empty($options['account'])) {
+//            throw new ConfigException('account is empty');
+//        }
+//
+//        if (empty($options['password'])) {
+//            throw new ConfigException('password is empty');
+//        }
+//
+//        if (empty($options['base_uri'])) {
+//            throw new ConfigException('base_uri is empty');
+//        }
+//        if (empty($options['Authorization'])) {
+//            $this->setAccessToken($options['Authorization']);
+//        }
 
-        if (empty($options['password'])) {
-            throw new \Exception('password is empty');
-        }
-
-        $this->config                     = new Config($options);
-        $this->httpService                = new HttpService(new Client(['base_uri' => $this->config->get('base_uri')]), $this->config);
-        $this->remoteLoginManager         = new RemoteLoginManager($this->httpService, $this->config);
-        $this->remoteFriendManager        = new RemoteFriendManager($this->httpService);
-        $this->remoteAddressManager       = new RemoteAddressManager($this->httpService, $this->config);
-        $this->remoteReceiveMessageHandle = new RemoteReceiveMessageHandle();
+//        $this->request                    = Request::createFromGlobals();
+//        $this->config                     = new Config($config);
+//        $this->remoteReceiveMessageHandle = new RemoteReceiveMessageHandle();
+//
+//        $this->getHttpClient()->withRequestMiddleware(fn($request) => var_dump((string)$request->getUri()));
+//        $this->getHttpClient()->withToken($this->getAccessToken(), 'Authorization');
     }
 
-    public function getRemoteLoginManager(): RemoteLoginManagerInterface
+    public function getMessage(): MessageInterface
     {
-        return $this->remoteLoginManager;
-    }
+        $message = $this->request->all();
 
-    public function getRemoteFriendManager(): RemoteFriendManagerInterface
-    {
-        return $this->remoteFriendManager;
-    }
-
-    public function getRemoteAddressManager(): RemoteAddressManagerInterface
-    {
-        return $this->remoteAddressManager;
+        return $this->remoteReceiveMessageHandle->dataToMessageFormat($message);
     }
 
     public function getRemoteReceiveMessageHandle(): RemoteReceiveMessageHandleInterface
@@ -68,14 +70,28 @@ class ExampleServiceProviderAProvider implements ServiceProviderInterface
         return $this->remoteReceiveMessageHandle;
     }
 
-    public function getConfig(): Config
+    public function setInstanceId(string $instanceId): void
+    {
+        $this->config->set('instanceId', $instanceId);
+    }
+
+    public function setWechatId(string $wechatId): void
+    {
+        $this->config->set('wechatId', $wechatId);
+    }
+
+    public function getInstanceId(): string
+    {
+        return $this->config->get('instanceId');
+    }
+
+    public function getWechatId(): string
+    {
+        return $this->config->get('wechatId');
+    }
+
+    public function getConfig(): ConfigInterface
     {
         return $this->config;
     }
-
-    public function getSendMessageManager(): SendMessageManagerInterface
-    {
-        // TODO: Implement getSendMessageManager() method.
-    }
-
 }

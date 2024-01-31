@@ -12,7 +12,7 @@ class LoginRequest extends FormRequest
 {
     protected array $scenes = [
         'login'            => ['account', 'password'],
-        'getQRCode'        => ['wcId', 'proxy', 'proxyIp', 'proxyUser', 'proxyPassword'],
+        'iPadLogin'        => ['wcId', 'proxy', 'proxyIp', 'proxyUser', 'proxyPassword'],
         'getIPadLoginInfo' => ['wId'],
         'initAddressList'  => ['wId'],
         'getAddressList'   => ['wId'],

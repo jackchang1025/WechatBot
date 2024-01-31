@@ -4,25 +4,13 @@ namespace App\Service\WechatBot\User\Login;
 
 use App\Service\WechatBot\Enum\UserStatus;
 use App\Service\WechatBot\Login\QRCodeResponseInterface;
-use App\Service\WechatBot\ServiceProviderInterface;
+use App\Service\WechatBot\RepositoryI\UserRepositoryInterface;
+use App\Service\WechatBot\User\Account;
 use App\Service\WechatBot\User\UserInterface;
 use Exception;
 
-class LoginManager implements LoginManagerInterface
+trait LoginManager
 {
-
-    public function __construct(protected UserInterface $user, protected ServiceProviderInterface $serviceProvider)
-    {
-
-    }
-
-    public function login(): UserInterface
-    {
-        //登录
-        $this->serviceProvider->getRemoteLoginManager()->login();
-
-        return $this->user;
-    }
 
     /**
      * @return QRCodeResponseInterface
@@ -30,23 +18,24 @@ class LoginManager implements LoginManagerInterface
      */
     public function getQRCode(): QRCodeResponseInterface
     {
-        $response = $this->serviceProvider->getRemoteLoginManager()->getQRCode();
+        $response = $this->serviceProvider->getQRCode();
 
         if (!$response->getQrCodeUrl()) {
             throw new Exception("获取二维码失败");
         }
 
+        if (!$response->getInstanceId()) {
+            throw new Exception("获取实例id失败");
+        }
+
+
+
         return $response;
     }
 
-    public function getUserInfo(): UserInterface
+    public function getUserInfo(): UserResponseInterface
     {
         //获取用户信息
-        $data =  $this->serviceProvider->getRemoteLoginManager()->getUserInfo();
-
-        $this->user->setData($data);
-        $this->user->setStatus(UserStatus::LOGIN->value);
-
-        return $this->user;
+        return $this->serviceProvider->getUserInfo();
     }
 }

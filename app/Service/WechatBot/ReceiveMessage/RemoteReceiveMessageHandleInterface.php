@@ -9,5 +9,5 @@ interface RemoteReceiveMessageHandleInterface
 {
     public function receiveMessageHandle(ReceiveMessageResponseInterface $receiveMessageResponse);
 
-    public function dataToMessageFormat(array $data,UserInterface $user):MessageInterface;
+    public function dataToMessageFormat(array $data):MessageInterface;
 }

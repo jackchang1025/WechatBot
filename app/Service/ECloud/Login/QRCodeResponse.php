@@ -3,16 +3,17 @@
 namespace App\Service\ECloud\Login;
 
 use App\Service\WechatBot\Login\QRCodeResponseInterface;
+use App\Service\WechatBot\Response;
 
-class QRCodeResponse implements QRCodeResponseInterface
+class QRCodeResponse extends Response implements QRCodeResponseInterface
 {
-
-    public function __construct(protected array $data = [])
+    public function getQrCodeUrl(): ?string
     {
+        return $this->response->object()->qrCodeUrl;
     }
 
-    public function getQrCodeUrl(): string
+    public function getInstanceId(): ?string
     {
-        return $this->data['qrCodeUrl'];
+        return $this->response->object()->wId;
     }
 }

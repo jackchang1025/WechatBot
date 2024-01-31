@@ -1,0 +1,68 @@
+@startuml
+
+class WechatBot {
+    - user: User
+    - remoteService: RemoteServiceInterface
+
+    + addFriend(userId: String): void
+    + onMessageReceived(message: String): void
+    + handleError(error: String): void
+    + integrateWithNewService(newService: NewServiceInterface): void
+}
+
+class RepositoryInterface {
+}
+
+class CacheHandler {
+}
+
+class User {
+    + login(credentials: Credentials): void
+    + logout(): void
+    + getUserInfo(userId: String): UserInfo
+    + getFriendsList(userId: String): List<Friend>
+    + getGroupList(userId: String): List<Group>
+}
+
+class FriendsManager {
+    - remoteService: RemoteServiceInterface
+    - repository: RepositoryInterface
+}
+
+class GroupManager {
+    - remoteService: RemoteServiceInterface
+    - repository: RepositoryInterface
+}
+
+class AddressListManager {
+    - repository: RepositoryInterface
+}
+
+class RemoteServiceInterface {
+}
+
+class WechatService {
+}
+
+'WechatBot uses User, RemoteServiceInterface
+WechatBot --> User: Uses
+WechatBot --> RemoteServiceInterface: Uses
+
+'User uses RemoteServiceInterface, RepositoryInterface
+User --> RemoteServiceInterface: Uses
+User --> RepositoryInterface: Uses
+
+'FriendsManager and GroupManager uses RemoteServiceInterface, RepositoryInterface
+FriendsManager --> RemoteServiceInterface: Uses
+FriendsManager --> RepositoryInterface: Uses
+
+GroupManager --> RemoteServiceInterface: Uses
+GroupManager --> RepositoryInterface: Uses
+
+'AddressListManager uses RepositoryInterface
+AddressListManager --> RepositoryInterface: Uses
+
+'RemoteServiceInterface interacts with WechatService
+RemoteServiceInterface ..> WechatService: Interacts with
+
+@enduml

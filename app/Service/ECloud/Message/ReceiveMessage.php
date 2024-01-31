@@ -2,8 +2,8 @@
 
 namespace App\Service\ECloud\Message;
 
-use App\Service\ECloud\Config;
-use App\Service\ECloud\HttpService;
+use App\Service\ECloud\ConfigTrait;
+use App\Service\OneBotECloud\HttpService\TraitHttpClient;
 use App\Service\WechatBot\Exceptions\ApiResponseException;
 use App\Service\WechatBot\Exceptions\ConfirmLoginException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -12,8 +12,8 @@ class ReceiveMessage implements \App\Service\WechatBot\ReceiveMessage\ReceiveMes
 {
 
     public function __construct(
-        protected HttpService $httpService,
-        protected Config $config,
+        protected TraitHttpClient $httpService,
+        protected ConfigTrait $config,
     ) {}
 
     /**

@@ -28,7 +28,7 @@ class LoginController
         ]);
     }
 
-    #[Scene(scene: 'getQRCode')]
+    #[Scene(scene: 'iPadLogin')]
     public function iPadLogin(LoginRequest $request, Response $response): ResponseInterface
     {
         $validated = $request->validated();
@@ -42,19 +42,6 @@ class LoginController
     #[Scene(scene: 'getIPadLoginInfo')]
     public function getIPadLoginInfo(LoginRequest $request, Response $response): ResponseInterface
     {
-
-        //wcId	string	微信id
-        //(唯一值）
-        //nickName	string	昵称
-        //deviceType	string	扫码的设备类型
-        //uin	int	识别码
-        //headUrl	string	头像url
-        //wAccount	string	手机上显示的微信号
-        //（用户若手机改变微信号，本值会变）
-        //sex	int	性别
-        //mobilePhone	string	绑定手机
-        //status	string	保留字段
-
         sleep(rand(5,10));
 
         return $response->success([

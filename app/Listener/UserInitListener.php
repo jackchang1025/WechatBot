@@ -19,6 +19,9 @@ class UserInitListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        var_dump($event->user->getData());
+        /**
+         * @var UserInitEvent $event
+         */
+//        var_dump($event->user->getRepository());
     }
 }

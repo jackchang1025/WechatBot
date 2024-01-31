@@ -6,6 +6,7 @@ use App\Service\WechatBot\Address\AddressListInterface;
 use App\Service\WechatBot\Friend\FriendInterface;
 use App\Service\WechatBot\Group\GroupInterface;
 use App\Service\WechatBot\GroupList\GroupListInterface;
+use App\Service\WechatBot\RepositoryI\RepositoryInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\FileInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\ImageInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\TextInterface;
@@ -13,7 +14,7 @@ use App\Service\WechatBot\SendMessage\MessageFormat\VideoInterface;
 use App\Service\WechatBot\SendMessage\MessageFormat\VoiceInterface;
 use App\Service\WechatBot\User\Login\LoginManagerInterface;
 
-interface UserInterface extends \ArrayAccess
+interface UserInterface
 {
 
     /**
@@ -46,11 +47,15 @@ interface UserInterface extends \ArrayAccess
      */
     public function getHeadUrl(): string;
 
+    public function getInstanceId(): ?string;
+
     /**
      * 手机上显示的微信号
      * @return string
      */
     public function getWAccount(): string;
+
+    public function getRepository(): RepositoryInterface;
 
     /**
      * 性别
@@ -69,19 +74,14 @@ interface UserInterface extends \ArrayAccess
     //是否掉线
     public function isOffline(): bool;
 
-    public function setData(array $data): void;
+    public function isNotLogin(): bool;
 
-    /**
-     * 保留字段
-     * @return string
-     */
+    public function updateData(array $data):bool;
+
     public function getStatus(): string;
 
-    public function setStatus(string $status): void;
+    public function updateStatus(string $status): bool;
 
-    public function setGroupList(GroupListInterface $groupList);
-
-    public function getGroupList(): GroupListInterface;
 
     public function setAddressList(AddressListInterface $addressList);
 
@@ -96,4 +96,9 @@ interface UserInterface extends \ArrayAccess
     public function sendVoice(FriendInterface|GroupInterface $to, VoiceInterface $voice);
 
     public function sendVideo(FriendInterface|GroupInterface $to, VideoInterface $video);
+
+    public function getQRCode();
+
+    public function getFriend(string $wechatId):FriendInterface;
+    public function getGroup(string $wechatId):GroupInterface;
 }

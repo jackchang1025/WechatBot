@@ -1,0 +1,82 @@
+@startuml
+
+class WechatBot {
+    +listen()
+}
+
+class User {
+    +status()
+    +isLogin()
+}
+
+class Account {
+    +getUserInfo()
+    +getInstanceId()
+}
+
+class Action {
+     +login()
+     +logout()
+     +curd()
+     +sendMessage()
+     +receiveMessage()
+}
+
+
+class TraitMiddleware {
+    +withGetQRCode()
+    +with()
+}
+
+class Friends {
+    +manageFriends()
+}
+
+class Group {
+    +manageGroup()
+}
+
+class FriendsGroupAction {
+    +sendMessage()
+    +performCRUD()
+}
+
+class RemoteServiceClient {
+    +sendRemoteMessage()
+    +receiveRemoteMessage()
+}
+
+class RemoteServiceInterface {
+    +login()
+    +logout()
+    +sendRemoteMessage()
+    +action()
+}
+
+class RepositoryInterface {
+    +storeData()
+    +retrieveData()
+}
+WechatBot ..> TraitMiddleware
+WechatBot --> User
+WechatBot --> RemoteServiceInterface
+User ..> Action
+User --> RepositoryInterface
+User --> RemoteServiceInterface
+RemoteServiceInterface --> RemoteServiceClient
+'WechatBot --> AddressList
+'WechatBot --> Friend
+'WechatBot --> Group
+'WechatBot --> FriendsGroupAction
+'WechatBot --> RemoteServiceClient
+'
+'UserAction --> RepositoryInterface
+'AddressList --> RepositoryInterface
+'Friend --> RepositoryInterface
+'Group --> RepositoryInterface
+'FriendsGroupAction --> RemoteServiceClient
+'
+'RemoteServiceClient --> RemoteServiceInterface
+'RemoteServiceInterface --> WechatBot
+
+@enduml

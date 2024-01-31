@@ -21,6 +21,7 @@ class IndexController extends AbstractController
         return [
             'method' => $method,
             'message' => "Hello {$user}.",
+            'event' => $this->request->getAttribute('event'),
         ];
     }
 }

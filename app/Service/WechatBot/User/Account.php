@@ -2,7 +2,11 @@
 
 namespace App\Service\WechatBot\User;
 
-trait UserInfo {
+class Account {
+
+    public function __construct(protected array $data = [])
+    {
+    }
 
     /**
      * 微信原始id
@@ -48,4 +52,8 @@ trait UserInfo {
         return $this->data['mobilePhone']?? '';
     }
 
+    public function getStatus(): string
+    {
+        return $this->data['status']?? '';
+    }
 }

@@ -16,6 +16,7 @@ use App\Controller\ECloud\CallbackController;
 use App\Controller\ECloud\LoginController;
 use App\Controller\WebSocketController;
 use App\Middleware\ECloud\AuthMiddleware;
+use App\Middleware\ECloud\MessageFormatMiddleware;
 use Hyperf\HttpServer\Router\Router;
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
@@ -24,11 +25,11 @@ Router::get('/favicon.ico', function () {
     return '';
 });
 
+Router::addGroup('/api', function () {
 
-Router::addServer('ws', function () {
-    Router::get('/', [WebSocketController::class, 'index']);
+    Router::get('/login', [LoginController::class, 'login']);
+
 });
-
 
 Router::addGroup('', function () {
 
@@ -47,4 +48,23 @@ Router::addGroup('', function () {
     }, ['middleware' => [AuthMiddleware::class]]);
 
 });
+
+Router::addGroup('/drive',function (){
+    Router::addGroup('/ecloud',function (){
+
+    },['middleware' => [MessageFormatMiddleware::class]]);
+
+    Router::addGroup('/http',function (){
+
+    },['middleware' => [MessageFormatMiddleware::class]]);
+});
+
+
+Router::addServer('ws', function () {
+    Router::get('/', [WebSocketController::class, 'index']);
+});
+
+
+
+
 

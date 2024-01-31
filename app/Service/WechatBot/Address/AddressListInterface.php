@@ -4,7 +4,7 @@
 namespace App\Service\WechatBot\Address;
 
 use App\Service\WechatBot\Friend\FriendInterface;
-use App\Service\WechatBot\Friend\Friends;
+use App\Service\WechatBot\Friend\Friend;
 
 interface AddressListInterface
 {

@@ -9,6 +9,8 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
+use Hyperf\Database\Commands\ModelOption;
 use function Hyperf\Support\env;
 
 return [
@@ -35,6 +37,10 @@ return [
                 'path' => 'app/Model',
                 'force_casts' => true,
                 'inheritance' => 'Model',
+                'with_comments' => true,//是否增加字段注释
+                'refresh-fillable' => true,//是否刷新 fillable 参数
+                'table_mapping' => [],//为表名 -> 模型增加映射关系 比如 ['users:Account']
+                'property_case' => ModelOption::PROPERTY_SNAKE_CASE,//字段类型 0 蛇形 1 驼峰
             ],
         ],
     ],

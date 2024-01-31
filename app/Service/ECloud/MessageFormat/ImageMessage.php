@@ -19,5 +19,4 @@ class ImageMessage implements ImageMessageInterface
     public function downloadImage(){
 
     }
-
 }
